@@ -1,0 +1,9 @@
+#wrapper {
+	margin: 8px auto 0px auto;
+}
+
+#renderer {
+	background-color: #FFAA99;
+	width: 800px;
+	height: 600px;
+}
