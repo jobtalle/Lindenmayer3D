@@ -3,12 +3,12 @@ function Controller(element) {
 	
 	var system = new Lindenmayer();
 	
-	system.addRule("A(x) : x < 2 = A(x + 1)A(x)");
+	system.addRule("A(age) : age < 2 = A(+age + 1)A(0)");
 	
 	console.log("Rules:");
 	for(var rule = 0; rule < system.rules.length; ++rule)
 		console.log(system.rules[rule]);
 	
 	console.log("Result:");
-	console.log(Lindenmayer.prototype.toString(system.process("A(0)", 2)));
+	console.log(Lindenmayer.prototype.toString(system.process("A(0)", 3)));
 }

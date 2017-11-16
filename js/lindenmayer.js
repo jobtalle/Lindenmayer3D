@@ -42,9 +42,18 @@ function Rule(string) {
 	
 	this.head = new RuleHead(source.substring(0, source.lastIndexOf("=")));
 	this.body = new RuleBody(source.substring(source.lastIndexOf("=") + 1));
+	this.keys = this.getKeys();
+	this.fCondition = new Function(this.keys, "return " + this.head.condition);
+	
+	this.addFunctionsToBody();
 }
 
 Rule.prototype = {
+	addFunctionsToBody() {
+		for(var symbol = 0; symbol < this.body.body.length; ++symbol)
+			this.body.body[symbol].createFunctions(this.keys);
+	},
+	
 	isApplicable(symbol, predecessor, successor) {
 		if(!symbol.matches(this.head.symbol))
 			return false;
@@ -58,9 +67,23 @@ Rule.prototype = {
 		this.key = this.setKey(symbol, predecessor, successor);
 		
 		if(this.head.condition != null)
-			return eval("with(this.key){" + this.head.condition + ";}");
+			return this.fCondition(Object.values(this.key));
 		else
 			return true;
+	},
+	
+	getKeys() {
+		var keys = [];
+		
+		if(this.head.predecessor != null)
+			keys = keys.concat(this.head.predecessor.parameters);
+		
+		keys = keys.concat(this.head.symbol.parameters);
+		
+		if(this.head.successor != null)
+			keys = keys.concat(this.head.successor.parameters);
+		
+		return keys;
 	},
 	
 	assignVariables(object, key, values) {
@@ -83,9 +106,13 @@ Rule.prototype = {
 	}
 }
 
-function Symbol(string, index) {
-	if(string != null)
+function Symbol(string, index=null) {
+	if(index != null)
 		this.parse(string, index);
+	else {
+		this.symbol = string;
+		this.parameters = [];
+	}
 }
 
 Symbol.prototype = {
@@ -106,11 +133,15 @@ Symbol.prototype = {
 		this.length = index - startIndex;
 	},
 	
-	construct(symbol, parameters) {
-		return {
-			symbol: symbol,
-			parameters: parameters
-		};
+	createFunction(parameter) {
+		return "return " + parameter;
+	},
+	
+	createFunctions(keys) {
+		this.functions = [];
+		
+		for(var parameter = 0; parameter < this.parameters.length; ++parameter)
+			this.functions.push(new Function(keys, this.createFunction(this.parameters[parameter])));
 	},
 	
 	getArity() {
@@ -203,24 +234,12 @@ Lindenmayer.prototype = {
 		
 		for(var index = 0; index < rule.body.body.length; ++index) {
 			var s = rule.body.body[index];
-			var code = "with(rule.key){var result=new Symbol();result.symbol=\"" + s.symbol + "\";";
+			var result = new Symbol(s.symbol);
 			
-			if(s.parameters.length > 0) {
-				code += "result.parameters=[";
+			if(s.parameters.length > 0)
+				for(var parameter = 0; parameter < s.parameters.length; ++parameter)
+					result.parameters.push(s.functions[parameter](Object.values(rule.key)));
 				
-				for(var parameter = 0; parameter < s.parameters.length; ++parameter) {
-					code += s.parameters[parameter];
-					
-					if(parameter != s.parameters.length - 1)
-						code += ",";
-					else
-						code += "];";
-				}
-			}
-			else
-				code += "result.parameters=[];";
-			
-			eval(code + "}");
 			returnSymbols.push(result);
 		}
 		
