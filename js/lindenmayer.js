@@ -147,7 +147,7 @@ function Lindenmayer() {
 }
 
 Lindenmayer.prototype = {
-	MAX_ITERATIONS: 16,
+	MAX_LENGTH: 16000,
 	
 	setConstants(constants) {
 		this.constants = constants;
@@ -168,9 +168,6 @@ Lindenmayer.prototype = {
 	
 	process(axiom, iterations) {
 		var axiom = this.toSymbols(axiom.replace(/\s/g, ""));
-		
-		if(iterations > this.MAX_ITERATIONS)
-			iterations = this.MAX_ITERATIONS;
 		
 		for(var iteration = 0; iteration < iterations; ++iteration)
 			axiom = this.applyRules(axiom);
@@ -258,6 +255,9 @@ Lindenmayer.prototype = {
 				successor = sentence[symbol + 1];
 			
 			newSentence = newSentence.concat(this.parseSymbol(predecessor, sentence[symbol], successor));
+			
+			if(newSentence.length > this.MAX_LENGTH)
+				return newSentence;
 		}
 		
 		return newSentence;
