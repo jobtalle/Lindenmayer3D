@@ -9,6 +9,10 @@ function Renderer(element) {
 }
 
 Renderer.prototype = {
+	CAMERA_ANGLE: 70,
+	ZNEAR: 0.1,
+	ZFAR: 100,
+	
 	getMesh() {
 		var geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 		var material = new THREE.MeshNormalMaterial();
@@ -17,7 +21,11 @@ Renderer.prototype = {
 	},
 	
 	initializeCamera() {
-		this.camera = new THREE.PerspectiveCamera( 70, this.width / this.height, 0.01, 10);
+		this.camera = new THREE.PerspectiveCamera(
+			this.CAMERA_ANGLE,
+			this.width / this.height,
+			this.ZNEAR,
+			this.ZFAR);
 		this.camera.position.z = 1;
 	},
 	

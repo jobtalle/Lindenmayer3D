@@ -4,7 +4,9 @@
 		<title>3D L-System</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css"/>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
+		<script src="js/lindenmayer.js"></script>
 		<script src="js/renderer.js"></script>
+		<script src="js/controller.js"></script>
 	</head>
 	<body>
 		<div id="wrapper">
@@ -13,6 +15,6 @@
 				<h2>Controls</h2>
 			</div>
 		</div>
-		<script>new Renderer(document.getElementById("renderer"));</script>
+		<script>new Controller(document.getElementById("renderer"));</script>
 	</body>
 </html>
