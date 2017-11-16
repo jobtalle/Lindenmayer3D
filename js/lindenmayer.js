@@ -29,6 +29,8 @@ function RuleHead(string) {
 	
 	if(conditionIndex != -1)
 		this.condition = string.substr(conditionIndex + 1);
+	else
+		this.condition = null;
 }
 
 function RuleBody(string) {
@@ -197,6 +199,10 @@ Lindenmayer.prototype = {
 	applyRule(rule, symbol, predecessor, successor) {
 		var key = this.getKey(rule, symbol, predecessor, successor);
 		
+		if(rule.head.condition != null)
+			if(!eval("with(key){" + rule.head.condition + ";}"))
+				return [symbol];
+		
 		var returnSymbols = [];
 		for(var index = 0; index < rule.body.body.length; ++index) {
 			var s = rule.body.body[index];
@@ -220,7 +226,6 @@ Lindenmayer.prototype = {
 			else
 				code += "result.parameters=[];";
 			
-			console.log(code);
 			eval(code + "}");
 			returnSymbols.push(result);
 		}

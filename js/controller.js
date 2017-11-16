@@ -3,7 +3,7 @@ function Controller(element) {
 	
 	var system = new Lindenmayer();
 	
-	system.addRule("A(x) = A(x + 1)B");
+	system.addRule("A(x) : x < 2 = A(x + 1)");
 	
 	console.log("Rules:");
 	for(var rule = 0; rule < system.rules.length; ++rule)
