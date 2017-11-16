@@ -124,7 +124,7 @@ Symbol.prototype = {
 		return other != null && this.symbol == other.symbol && this.getArity() == other.getArity();
 	},
 	
-	print() {
+	toString() {
 		var str = this.symbol;
 		
 		if(this.parameters.length != 0) {
@@ -267,7 +267,7 @@ Lindenmayer.prototype = {
 		var sentence = "";
 		
 		for(var index = 0; index < symbols.length; ++index)
-			sentence += symbols[index].print()
+			sentence += symbols[index].toString()
 		
 		return sentence;
 	}
