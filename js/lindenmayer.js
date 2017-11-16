@@ -75,7 +75,7 @@ Symbol.prototype = {
 			this.parameters = string.substr(start, index - start).split(",");
 		}
 		else
-			this.parameters = null;
+			this.parameters = [];
 		
 		this.length = index - startIndex;
 	},
@@ -101,7 +101,7 @@ Symbol.prototype = {
 	print() {
 		var str = this.symbol;
 		
-		if(this.parameters != null) {
+		if(this.parameters.length != 0) {
 			str += "(";
 			
 			for(var parameter = 0; parameter < this.parameters.length; ++parameter)
@@ -200,21 +200,28 @@ Lindenmayer.prototype = {
 		var returnSymbols = [];
 		for(var index = 0; index < rule.body.body.length; ++index) {
 			var s = rule.body.body[index];
-			var code =
-				"var result=new Symbol();result.symbol=\"" +
-				s.symbol +
-				"\";result.parameters=[";
+			var code = "with(key){var result=new Symbol();result.symbol=\"" + s.symbol + "\";";
 			
-			for(var parameter = 0; parameter < s.parameters.length; ++parameter) {
-				code += "Number(key." + s.parameters[parameter] + ")";
+			if(s.parameters.length > 0) {
+				code += "result.parameters=[";
 				
-				if(parameter != s.parameters.length - 1)
-					code += ",";
-				else
-					code += "];";
+				for(var parameter = 0; parameter < s.parameters.length; ++parameter) {
+					if(isNaN(s.parameters[parameter]))
+						code += "Number(" + s.parameters[parameter] + ")";
+					else
+						code += s.parameters[parameter];
+					
+					if(parameter != s.parameters.length - 1)
+						code += ",";
+					else
+						code += "];";
+				}
 			}
+			else
+				code += "result.parameters=[];";
 			
-			eval(code);
+			console.log(code);
+			eval(code + "}");
 			returnSymbols.push(result);
 		}
 		
@@ -248,10 +255,7 @@ Lindenmayer.prototype = {
 			if(symbol + 1 < sentence.length)
 				successor = sentence[symbol + 1];
 			
-			var newStuff = this.parseSymbol(predecessor, sentence[symbol], successor);
-			for(var i = 0; i < newStuff.length; ++i)
-				newSentence.push(newStuff[i]);
-			//newSentence.concat(this.parseSymbol(predecessor, sentence[symbol], successor));
+			newSentence = newSentence.concat(this.parseSymbol(predecessor, sentence[symbol], successor));
 		}
 		
 		return newSentence;
