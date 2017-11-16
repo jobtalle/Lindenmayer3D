@@ -134,6 +134,8 @@ Symbol.prototype = {
 	},
 	
 	createFunction(parameter) {
+		console.log(parameter.match(new RegExp(/[a-z_]\w*(?!\w*\s*\()/ig)));
+		
 		return "return " + parameter;
 	},
 	
