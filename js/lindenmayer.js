@@ -7,6 +7,11 @@ function Rule(string) {
 	console.log(rhs);
 }
 
+function Symbol(symbol, parameters) {
+	this.symbol = symbol;
+	this.parameters = parameters;
+}
+
 function Lindenmayer() {
 	this.rules = [];
 	this.constants = "";
@@ -45,11 +50,11 @@ Lindenmayer.prototype = {
 	},
 	
 	applyRules(sentence) {
-		var newSentence = "";
+		var symbols = [];
 		
 		for(var index = 0; index < sentence.length; ++index) {
 			var symbol = sentence[index];
-			var parameters = [];
+			var parameters = null;
 			
 			if(index + 1 < sentence.length && sentence[index + 1] == "(") {
 				var start = ++index + 1;
@@ -58,9 +63,34 @@ Lindenmayer.prototype = {
 				parameters = sentence.substr(start, index - start).split(",");
 			}
 			
-			console.log("Parsing symbol " + symbol + " with params " + parameters);
+			symbols.push(new Symbol(symbol, parameters));
 		}
 		
-		return newSentence;
+		return this.compileSentence(symbols);
+	},
+	
+	compileSentence(symbols) {
+		var sentence = "";
+		
+		for(var index = 0; index < symbols.length; ++index) {
+			var symbol = symbols[index];
+			
+			sentence += symbol.symbol;
+			
+			if(symbol.parameters != null) {
+				sentence += "(";
+				
+				for(var parameter = 0; parameter < symbol.parameters.length; ++parameter) {
+					sentence += symbol.parameters[parameter];
+					
+					if(parameter != symbol.parameters.length - 1)
+						sentence += ",";
+				}
+				
+				sentence += ")";
+			}
+		}
+		
+		return sentence;
 	}
 }
