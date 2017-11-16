@@ -55,7 +55,31 @@ Rule.prototype = {
 		if(this.head.successor != null && !this.head.successor.matches(successor))
 			return false;
 		
-		return true;
+		this.key = this.setKey(symbol, predecessor, successor);
+		
+		if(this.head.condition != null)
+			return eval("with(this.key){" + this.head.condition + ";}");
+		else
+			return true;
+	},
+	
+	assignVariables(object, key, values) {
+		for(var index = 0; index < key.parameters.length; ++index)
+			object[key.parameters[index]] = Number(values.parameters[index]);
+	},
+	
+	setKey(symbol, predecessor, successor) {
+		this.key = new Object();
+		
+		this.assignVariables(this.key, this.head.symbol, symbol);
+		
+		if(this.head.predecessor != null)
+			this.assignVariables(this.key, this.head.predecessor, predecessor);
+		
+		if(this.head.successor != null)
+			this.assignVariables(this.key, this.head.successor, successor);
+		
+		return this.key;
 	}
 }
 
@@ -177,45 +201,18 @@ Lindenmayer.prototype = {
 		return rules;
 	},
 	
-	assignVariables(object, key, values) {
-		for(var index = 0; index < key.parameters.length; ++index)
-			object[key.parameters[index]] = values.parameters[index];
-	},
-	
-	getKey(rule, symbol, predecessor, successor) {
-		var key = new Object();
-		
-		this.assignVariables(key, rule.head.symbol, symbol);
-		
-		if(rule.head.predecessor != null)
-			this.assignVariables(key, rule.head.predecessor, predecessor);
-		
-		if(rule.head.successor != null)
-			this.assignVariables(key, rule.head.successor, successor);
-		
-		return key;
-	},
-	
 	applyRule(rule, symbol, predecessor, successor) {
-		var key = this.getKey(rule, symbol, predecessor, successor);
-		
-		if(rule.head.condition != null)
-			if(!eval("with(key){" + rule.head.condition + ";}"))
-				return [symbol];
-		
 		var returnSymbols = [];
+		
 		for(var index = 0; index < rule.body.body.length; ++index) {
 			var s = rule.body.body[index];
-			var code = "with(key){var result=new Symbol();result.symbol=\"" + s.symbol + "\";";
+			var code = "with(rule.key){var result=new Symbol();result.symbol=\"" + s.symbol + "\";";
 			
 			if(s.parameters.length > 0) {
 				code += "result.parameters=[";
 				
 				for(var parameter = 0; parameter < s.parameters.length; ++parameter) {
-					if(isNaN(s.parameters[parameter]))
-						code += "Number(" + s.parameters[parameter] + ")";
-					else
-						code += s.parameters[parameter];
+					code += s.parameters[parameter];
 					
 					if(parameter != s.parameters.length - 1)
 						code += ",";
