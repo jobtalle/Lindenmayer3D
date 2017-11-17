@@ -122,8 +122,16 @@ Symbol.prototype = {
 		this.symbol = string[index];
 		
 		if(index + 1 < string.length && string[index + 1] == "(") {
+			var scope = 1;
 			var start = ++index + 1;
-			while(string[++index] != ")");
+			while(string[++index]) {
+				if(string[index] == "(")
+					++scope;
+				
+				if(string[index] == ")")
+					if(--scope == 0)
+						break;
+			}
 			
 			this.parameters = string.substr(start, index - start).split(",");
 		}
