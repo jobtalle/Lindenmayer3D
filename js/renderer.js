@@ -5,7 +5,6 @@ function Renderer(element) {
 	this.initializeCamera();
 	this.initializeRenderer(element);
 	this.initializeScene();
-	this.animate();
 }
 
 Renderer.prototype = {
@@ -13,11 +12,24 @@ Renderer.prototype = {
 	ZNEAR: 0.1,
 	ZFAR: 100,
 	
-	getMesh() {
-		var geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-		var material = new THREE.MeshNormalMaterial();
+	getGeometry(symbols, constants) {
+		var geometry = new THREE.Geometry();
+		
+		geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+		geometry.vertices.push(new THREE.Vector3(1, 0, 0));
+		geometry.vertices.push(new THREE.Vector3(0, 1, 0));
+		geometry.vertices.push(new THREE.Vector3(1, 1, 1));
+		
+		geometry.faces.push(new THREE.Face3(0, 1, 2));
+		geometry.faces.push(new THREE.Face3(2, 1, 3));
+		
+		geometry.computeFaceNormals();
+		
+		return geometry;
+	},
 	
-		return new THREE.Mesh(geometry, material);
+	getMesh(symbols, constants) {
+		return new THREE.Mesh(this.getGeometry(symbols, constants), new THREE.MeshNormalMaterial());
 	},
 	
 	initializeCamera() {
@@ -36,14 +48,13 @@ Renderer.prototype = {
 		element.appendChild(this.renderer.domElement);
 	},
 	
-	initializeScene() {
+	initializeScene(symbols, constants) {
 		this.scene = new THREE.Scene();
-		this.scene.add(this.getMesh());
+		this.scene.add(this.getMesh(symbols, constants));
 	},
 	
-	animate() {
-		requestAnimationFrame(this.animate.bind(this));
-		
+	render(symbols, constants) {
+		this.initializeScene(symbols, constants);
 		this.renderer.render(this.scene, this.camera);
 	}
 }
