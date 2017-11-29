@@ -1,14 +1,42 @@
 function Controller(element) {
 	this.renderer = new Renderer(element);
-	
-	var system = new Lindenmayer();
-	
-	system.addRule("A(x) = A((x + 1))B");
+	this.buildSystem();
 	
 	console.log("Rules:");
-	for(var rule = 0; rule < system.rules.length; ++rule)
-		console.log(system.rules[rule]);
+	for(var rule = 0; rule < this.system.rules.length; ++rule)
+		console.log(this.system.rules[rule]);
 	
 	console.log("Result:");
-	console.log(Lindenmayer.prototype.toString(system.process("A(0)", 3)));
+	console.log(Lindenmayer.prototype.toString(this.system.process("A(0)", 3)));
+}
+
+Controller.prototype = {
+	getResult() {
+		return document.getElementById("l3d-result");
+	},
+	
+	getAxiom() {
+		return document.getElementById("l3d-axiom");
+	},
+	
+	getRule(index) {
+		return document.getElementById("l3d-rule" + index);
+	},
+	
+	buildSystem() {
+		this.system = new Lindenmayer();
+	
+		this.system.addRule("A(x) = A((x + 1))B");
+	},
+	
+	clearResult() {
+		this.getResult().value = "";
+	},
+	
+	step() {
+		if(this.getResult().value == "")
+			this.getResult().value = Lindenmayer.prototype.toString(this.system.process(this.getAxiom().value, 1));
+		else
+			this.getResult().value = Lindenmayer.prototype.toString(this.system.process(this.getResult().value, 1));
+	}
 }
