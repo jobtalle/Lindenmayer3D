@@ -9,8 +9,10 @@ function Renderer(element) {
 }
 
 Renderer.prototype = {
-	CAMERA_SPEED: 0.008,
+	CAMERA_SPEED: 0.01,
 	CAMERA_ANGLE: 70,
+	CAMERA_PITCH_MIN: 0.0001,
+	CAMERA_PITCH_MAX: Math.PI - 0.0001,
 	ZNEAR: 0.1,
 	ZFAR: 10000,
 	
@@ -67,6 +69,11 @@ Renderer.prototype = {
 		
 		this.cameraRotation += x * this.CAMERA_SPEED;
 		this.cameraPitch -= y * this.CAMERA_SPEED;
+		
+		if(this.cameraPitch < this.CAMERA_PITCH_MIN)
+			this.cameraPitch = this.CAMERA_PITCH_MIN;
+		else if(this.cameraPitch > this.CAMERA_PITCH_MAX)
+			this.cameraPitch = this.CAMERA_PITCH_MAX;
 		
 		this.paint();
 	},
