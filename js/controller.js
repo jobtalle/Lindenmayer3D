@@ -25,8 +25,17 @@ Controller.prototype = {
 	
 	buildSystem() {
 		this.system = new Lindenmayer();
+		
+		this.addRules(this.system);
+	},
 	
-		this.system.addRule("A(x) = A((x + 1))B");
+	addRules(system) {
+		var rule;
+		var index = 1;
+		
+		while(rule = this.getRule(index++), rule != null)
+			if(rule.value != "")
+				system.addRule(rule.value);
 	},
 	
 	clearResult() {
