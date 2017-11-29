@@ -4,6 +4,7 @@ function Renderer(element) {
 	this.scene = null;
 	
 	this.initializeCamera();
+	this.initializeView();
 	this.initializeRenderer(element);
 }
 
@@ -13,26 +14,11 @@ Renderer.prototype = {
 	ZNEAR: 0.1,
 	ZFAR: 10000,
 	
-	getGeometry(symbols, constants) {
-		var geometry = new THREE.Geometry();
-		
-		geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-		geometry.vertices.push(new THREE.Vector3(1, 0, 0));
-		geometry.vertices.push(new THREE.Vector3(0, 1, 0));
-		geometry.vertices.push(new THREE.Vector3(1, 1, 1));
-		
-		geometry.faces.push(new THREE.Face3(0, 1, 2));
-		geometry.faces.push(new THREE.Face3(2, 1, 3));
-		
-		geometry.computeFaceNormals();
-		
-		return geometry;
-	},
-	
 	getMesh(symbols, constants) {
 		var geometry = new Geometry(symbols, constants);
 		
 		geometry.build();
+		this.camera.center = geometry.getCenter();
 		
 		return new THREE.Mesh(geometry.get(), new THREE.MeshNormalMaterial());
 	},
@@ -43,18 +29,24 @@ Renderer.prototype = {
 			this.width / this.height,
 			this.ZNEAR,
 			this.ZFAR);
+	},
+	
+	initializeView() {
 		this.cameraRotation = Math.PI / 4;
 		this.cameraPitch = Math.PI / 4;
 		this.cameraZoom = 5;
-		
-		this.placeCamera();
+		this.camera.center = null;
 	},
 	
 	placeCamera() {
-		this.camera.position.x = Math.cos(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
-		this.camera.position.z = Math.sin(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
-		this.camera.position.y = Math.cos(this.cameraPitch) * this.cameraZoom;
-		this.camera.lookAt(0, 0, 0);
+		if(this.camera.center == null)
+			return;
+		
+		this.camera.position.x = this.camera.center.x + Math.cos(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
+		this.camera.position.z = this.camera.center.z + Math.sin(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
+		this.camera.position.y = this.camera.center.y + Math.cos(this.cameraPitch) * this.cameraZoom;
+		
+		this.camera.lookAt(this.camera.center.x, this.camera.center.y, this.camera.center.z);
 	},
 	
 	initializeRenderer(element) {
@@ -76,13 +68,16 @@ Renderer.prototype = {
 		this.cameraRotation += x * this.CAMERA_SPEED;
 		this.cameraPitch -= y * this.CAMERA_SPEED;
 		
-		this.placeCamera();
-		this.renderer.render(this.scene, this.camera);
+		this.paint();
 	},
 	
 	render(symbols, constants) {
 		this.buildScene(symbols, constants);
-		
+		this.paint();
+	},
+	
+	paint() {
+		this.placeCamera();
 		this.renderer.render(this.scene, this.camera);
 	}
 }

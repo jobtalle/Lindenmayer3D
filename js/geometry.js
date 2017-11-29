@@ -9,6 +9,10 @@ Geometry.prototype = {
 		return this.geometry;
 	},
 	
+	getCenter() {
+		return this.center;
+	},
+	
 	build() {
 		this.geometry.vertices.push(new THREE.Vector3(0, 0, 0));
 		this.geometry.vertices.push(new THREE.Vector3(1, 0, 0));
@@ -19,5 +23,7 @@ Geometry.prototype = {
 		this.geometry.faces.push(new THREE.Face3(2, 1, 3));
 		
 		this.geometry.computeFaceNormals();
+		
+		this.center = new THREE.Vector3(0.5, 0.5, 0);
 	}
 }
