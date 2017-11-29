@@ -1,5 +1,6 @@
 function Controller(element) {
 	this.renderer = new Renderer(element);
+	this.addListeners(element);
 	this.buildSystem();
 }
 
@@ -20,6 +21,49 @@ Controller.prototype = {
 		var lastRule = document.getElementById("l3d-rule" + (index - 1));
 		lastRule.parentNode.parentNode.parentNode.insertBefore(this.buildRuleField(index), document.getElementById("add-rule-button"));
 		document.getElementById("result-column").rowSpan = document.getElementById("result-column").rowSpan + 1;
+	},
+	
+	addListeners(element) {
+		this.rendererRect = element.getBoundingClientRect();
+		
+		element.addEventListener("mousedown", this.mouseDown.bind(this));
+		element.addEventListener("mousemove", this.mouseMove.bind(this));
+		element.addEventListener("mouseup", this.mouseUp.bind(this));
+		element.addEventListener("mouseleave", this.mouseUp.bind(this));
+	},
+	
+	mouseDown(event) {
+		this.dragStart(event.x - this.rendererRect.x, event.y - this.rendererRect.y)
+	},
+	
+	mouseMove(event) {
+		this.drag(event.x - this.rendererRect.x, event.y - this.rendererRect.y)
+	},
+	
+	mouseUp(event) {
+		this.dragStop();
+	},
+	
+	dragStart(x, y) {
+		this.dragging = true;
+		this.dragX = x;
+		this.dragY = y;
+	},
+	
+	drag(x, y) {
+		if(this.dragging) {
+			var deltaX = x - this.dragX;
+			var deltaY = y - this.dragY;
+			
+			this.dragX = x;
+			this.dragY = y;
+			
+			this.renderer.moveView(deltaX, deltaY);
+		}
+	},
+	
+	dragStop() {
+		this.dragging = false;
 	},
 	
 	getResult() {
