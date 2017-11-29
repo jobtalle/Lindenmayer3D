@@ -30,7 +30,11 @@ Renderer.prototype = {
 	},
 	
 	getMesh(symbols, constants) {
-		return new THREE.Mesh(this.getGeometry(symbols, constants), new THREE.MeshNormalMaterial());
+		var geometry = new Geometry(symbols, constants);
+		
+		geometry.build();
+		
+		return new THREE.Mesh(geometry.get(), new THREE.MeshNormalMaterial());
 	},
 	
 	initializeCamera() {
