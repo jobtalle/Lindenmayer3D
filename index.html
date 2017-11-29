@@ -32,7 +32,7 @@
 					<tr>
 						<td>Rule 1:</td>
 						<td><input id="l3d-rule1" type="text" onchange="controller.buildSystem()" value="A(x) = A(x + 1)"/></td>
-						<td rowspan="6" style="width: 300px">
+						<td id="result-column" rowspan="6" style="width: 300px">
 							<textarea id="l3d-result" readonly></textarea>
 						</td>
 					</tr>
@@ -55,6 +55,11 @@
 					<tr>
 						<td>Rule 6:</td>
 						<td><input id="l3d-rule6" type="text" onchange="controller.buildSystem()"/></td>
+					</tr>
+					<tr id="add-rule-button">
+						<td/><td>
+							<button onclick="controller.addRuleField()">Add rule</button>
+						</td>
 					</tr>
 				</table>
 			</div>

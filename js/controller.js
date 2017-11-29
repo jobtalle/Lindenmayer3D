@@ -1,16 +1,26 @@
 function Controller(element) {
 	this.renderer = new Renderer(element);
 	this.buildSystem();
-	
-	console.log("Rules:");
-	for(var rule = 0; rule < this.system.rules.length; ++rule)
-		console.log(this.system.rules[rule]);
-	
-	console.log("Result:");
-	console.log(Lindenmayer.prototype.toString(this.system.process("A(0)", 3)));
 }
 
 Controller.prototype = {
+	buildRuleField(index) {
+		var node = document.createElement("tr");
+		node.innerHTML = "<td>Rule " + index + ":</td><td><input id=\"l3d-rule" + index + "\" type=\"text\" onchange=\"controller.buildSystem()\"/></td>";
+		
+		return node;
+	},
+	
+	addRuleField() {
+		var index = 0;
+		
+		while(this.getRule(++index) != null);
+		
+		var lastRule = document.getElementById("l3d-rule" + (index - 1));
+		lastRule.parentNode.parentNode.parentNode.insertBefore(this.buildRuleField(index), document.getElementById("add-rule-button"));
+		document.getElementById("result-column").rowSpan = document.getElementById("result-column").rowSpan + 1;
+	},
+	
 	getResult() {
 		return document.getElementById("l3d-result");
 	},

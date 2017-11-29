@@ -14,7 +14,10 @@
 }
 
 #controls input {
-	width: 95%;
+	width: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box; 
 }
 
 #controls button {
