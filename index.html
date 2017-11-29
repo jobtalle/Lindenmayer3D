@@ -30,11 +30,19 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Rule 1:</td>
-						<td><input id="l3d-rule1" type="text" onchange="controller.buildSystem()" value="A(x) = A(x + 1)"/></td>
-						<td id="result-column" rowspan="6" style="width: 300px">
+						<td>Angle increment:</td>
+						<td><input id="l3d-angle" type="text" onchange="controller.buildSystem()" value="8"/></td>
+						<td id="result-column" rowspan="8" style="width: 300px">
 							<textarea id="l3d-result" readonly></textarea>
 						</td>
+					</tr>
+					<tr>
+						<td>Constants:</td>
+						<td><input id="l3d-constants" type="text" onchange="controller.buildSystem()"/></td>
+					</tr>
+					<tr>
+						<td>Rule 1:</td>
+						<td><input id="l3d-rule1" type="text" onchange="controller.buildSystem()" value="A(x) = A(x + 1)"/></td>
 					</tr>
 					<tr>
 						<td>Rule 2:</td>
