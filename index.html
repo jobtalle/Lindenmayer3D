@@ -12,7 +12,51 @@
 		<div id="wrapper">
 			<div id="renderer"></div> 
 			<div id="controls">
-				<h2>Controls</h2>
+				<table>
+					<tr>
+						<td>Axiom:</td>
+						<td><input id="l3d-axiom" type="text" value="A(0)"/></td>
+						<td>
+							<table>
+								<tr>
+									<td>
+										<button>Step</button>
+									</td>
+									<td>
+										<button>Clear</button>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>Rule 1:</td>
+						<td><input id="l3d-rule1" type="text" value="A(x) = A(x + 1)"/></td>
+						<td rowspan="6" style="width: 300px">
+							<textarea id="l3d-result" readonly></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>Rule 2:</td>
+						<td><input id="l3d-rule2" type="text"/></td>
+					</tr>
+					<tr>
+						<td>Rule 3:</td>
+						<td><input id="l3d-rule3" type="text"/></td>
+					</tr>
+					<tr>
+						<td>Rule 4:</td>
+						<td><input id="l3d-rule4" type="text"/></td>
+					</tr>
+					<tr>
+						<td>Rule 5:</td>
+						<td><input id="l3d-rule5" type="text"/></td>
+					</tr>
+					<tr>
+						<td>Rule 6:</td>
+						<td><input id="l3d-rule6" type="text"/></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<script>new Controller(document.getElementById("renderer"));</script>
