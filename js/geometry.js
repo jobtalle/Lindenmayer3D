@@ -53,7 +53,7 @@ Geometry.prototype = {
 		for(var index = 0; index < this.symbols.length; ++index) {
 			switch(this.symbols[index].symbol) {
 				case "[":
-					workingBranches.push([]);
+					workingBranches.push([at.clone()]);
 					break;
 				case "]":
 					branches.push(workingBranches.pop());
@@ -111,14 +111,17 @@ Geometry.prototype = {
 	
 	build() {
 		var branches = this.getBranches();
+		var scene = new THREE.Scene();
 		
 		for(var i = 0; i < branches.length; ++i)
 			if(branches[i].length > 1)
-				this.geometry = new THREE.TubeGeometry(
+				scene.add(new THREE.Mesh(new THREE.TubeGeometry(
 					new THREE.CatmullRomCurve3(branches[i]),
 					branches[i].length * 6,
 					0.1,
 					5,
-					false);
+					false), new THREE.MeshNormalMaterial()));
+					
+		return scene;
 	}
 }
