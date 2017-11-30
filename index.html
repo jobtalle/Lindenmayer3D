@@ -16,7 +16,7 @@
 				<table>
 					<tr>
 						<td>Axiom:</td>
-						<td><input id="l3d-axiom" type="text" value="A"/></td>
+						<td><input id="l3d-axiom" type="text" value="B[+A][-A]BA"/></td>
 						<td>
 							<table>
 								<tr>
@@ -32,7 +32,7 @@
 					</tr>
 					<tr>
 						<td>Angle increment:</td>
-						<td><input id="l3d-angle" type="text" onchange="controller.buildSystem()" value="8"/></td>
+						<td><input id="l3d-angle" type="text" onchange="controller.buildSystem()" value="26"/></td>
 						<td id="result-column" rowspan="8" style="width: 300px">
 							<textarea id="l3d-result" readonly></textarea>
 						</td>
@@ -43,11 +43,11 @@
 					</tr>
 					<tr>
 						<td>Rule 1:</td>
-						<td><input id="l3d-rule1" type="text" onchange="controller.buildSystem()" value="A = AA"/></td>
+						<td><input id="l3d-rule1" type="text" onchange="controller.buildSystem()" value="A = B[+A][-A]BA"/></td>
 					</tr>
 					<tr>
 						<td>Rule 2:</td>
-						<td><input id="l3d-rule2" type="text" onchange="controller.buildSystem()"/></td>
+						<td><input id="l3d-rule2" type="text" onchange="controller.buildSystem()" value="B = BB"/></td>
 					</tr>
 					<tr>
 						<td>Rule 3:</td>

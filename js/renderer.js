@@ -21,6 +21,7 @@ Renderer.prototype = {
 		
 		geometry.build();
 		this.camera.center = geometry.getCenter();
+		this.cameraZoom = geometry.getRadius();
 		
 		return new THREE.Mesh(geometry.get(), new THREE.MeshNormalMaterial());
 	},

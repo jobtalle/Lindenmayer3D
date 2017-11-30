@@ -18,6 +18,10 @@ Geometry.prototype = {
 		return this.center;
 	},
 	
+	getRadius() {
+		return this.center.length() * 2;
+	},
+	
 	getDirectionVector(yaw, roll, pitch) {
 		var v = new THREE.Vector3(0, 1, 0);
 		
@@ -36,6 +40,13 @@ Geometry.prototype = {
 		var yaw = 0;
 		var roll = 0;
 		var pitch = 0;
+		
+		var xMin = 0;
+		var xMax = 0;
+		var yMin = 0;
+		var yMax = 0;
+		var zMin = 0;
+		var zMax = 0;
 		
 		workingBranches[workingBranches.length - 1].push(at.clone());
 		
@@ -69,6 +80,19 @@ Geometry.prototype = {
 					if(this.constants.indexOf(this.symbols[index].symbol) == -1) {
 						at = at.add(this.getDirectionVector(yaw, roll, pitch));
 						
+						if(at.x < xMin)
+							xMin = at.x;
+						if(at.x > xMax)
+							xMax = at.x;
+						if(at.y < yMin)
+							yMin = at.y;
+						if(at.y > yMax)
+							yMax = at.y;
+						if(at.z < zMin)
+							zMin = at.z;
+						if(at.z > zMax)
+							zMax = at.z;
+						
 						workingBranches[workingBranches.length - 1].push(at.clone());
 					}
 					break;
@@ -77,7 +101,11 @@ Geometry.prototype = {
 		
 		branches.push(workingBranches.pop());
 		
-		console.log(branches);
+		this.center = new THREE.Vector3(
+			xMin + (xMax - xMin) / 2,
+			yMin + (yMax - yMin) / 2,
+			zMin + (zMax - zMin) / 2);
+		
 		return branches;
 	},
 	
@@ -85,13 +113,12 @@ Geometry.prototype = {
 		var branches = this.getBranches();
 		
 		for(var i = 0; i < branches.length; ++i)
-			this.geometry = new THREE.TubeGeometry(
-				new THREE.CatmullRomCurve3(branches[i]),
-				branches[i].length * 6,
-				0.1,
-				5,
-				false);
-				
-		this.center = new THREE.Vector3(0, 0.5, 0);
+			if(branches[i].length > 1)
+				this.geometry = new THREE.TubeGeometry(
+					new THREE.CatmullRomCurve3(branches[i]),
+					branches[i].length * 6,
+					0.1,
+					5,
+					false);
 	}
 }
