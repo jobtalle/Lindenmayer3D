@@ -82,6 +82,10 @@ Controller.prototype = {
 		return document.getElementById("l3d-rule" + index);
 	},
 	
+	getAngle() {
+		return document.getElementById("l3d-angle");
+	},
+	
 	buildSystem() {
 		this.system = new Lindenmayer();
 		
@@ -104,7 +108,7 @@ Controller.prototype = {
 	setResult(result) {
 		this.getResult().value = Lindenmayer.prototype.toString(result.slice(0, this.MAX_SYMBOLS));
 		
-		this.renderer.render(result, this.getConstants());
+		this.renderer.render(result, this.getConstants().value, this.getAngle().value);
 	},
 	
 	step() {

@@ -16,8 +16,8 @@ Renderer.prototype = {
 	ZNEAR: 0.1,
 	ZFAR: 10000,
 	
-	getMesh(symbols, constants) {
-		var geometry = new Geometry(symbols, constants);
+	getMesh(symbols, constants, angle) {
+		var geometry = new Geometry(symbols, constants, angle);
 		
 		geometry.build();
 		this.camera.center = geometry.getCenter();
@@ -58,9 +58,9 @@ Renderer.prototype = {
 		element.appendChild(this.renderer.domElement);
 	},
 	
-	buildScene(symbols, constants) {
+	buildScene(symbols, constants, angle) {
 		this.scene = new THREE.Scene();
-		this.scene.add(this.getMesh(symbols, constants));
+		this.scene.add(this.getMesh(symbols, constants, angle));
 	},
 	
 	moveView(x, y) {
@@ -78,8 +78,8 @@ Renderer.prototype = {
 		this.paint();
 	},
 	
-	render(symbols, constants) {
-		this.buildScene(symbols, constants);
+	render(symbols, constants, angle) {
+		this.buildScene(symbols, constants, angle);
 		this.paint();
 	},
 	
