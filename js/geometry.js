@@ -1,3 +1,57 @@
+function TurtleState(other) {
+	if(other == undefined) {
+		this.at = new THREE.Vector3(0, 0, 0);
+		this.yaw = 0;
+		this.roll = 0;
+		this.pitch = 0;
+	}
+	else {
+		this.at = other.at.clone();
+		this.yaw = other.yaw;
+		this.roll = other.roll;
+		this.pitch = other.pitch;
+	}
+}
+
+TurtleState.prototype = {
+	AXIS_X: new THREE.Vector3(1, 0, 0),
+	AXIS_Y: new THREE.Vector3(0, 1, 0),
+	AXIS_Z: new THREE.Vector3(0, 0, 1),
+	DEG_TO_RAD: Math.PI / 180,
+	
+	getDirectionVector() {
+		var v = new THREE.Vector3(0, 1, 0);
+		
+		v.applyAxisAngle(this.AXIS_X, this.pitch * this.DEG_TO_RAD);
+		v.applyAxisAngle(this.AXIS_Z, this.yaw * this.DEG_TO_RAD);
+		v.applyAxisAngle(this.AXIS_Y, this.roll * this.DEG_TO_RAD);
+		
+		return v;
+	},
+	
+	extrude() {
+		this.at = this.at.add(this.getDirectionVector());
+		
+		return this.at.clone();
+	},
+	
+	rotateYaw(yaw) {
+		this.yaw += yaw;
+	},
+	
+	rotateRoll(roll) {
+		this.roll += roll;
+	},
+	
+	rotatePitch(pitch) {
+		this.pitch += pitch;
+	},
+	
+	get() {
+		return this.at.clone();
+	}
+}
+
 function Geometry(symbols, constants, angle) {
 	this.symbols = symbols;
 	this.constants = constants;
@@ -5,11 +59,6 @@ function Geometry(symbols, constants, angle) {
 }
 
 Geometry.prototype = {
-	AXIS_X: new THREE.Vector3(1, 0, 0),
-	AXIS_Y: new THREE.Vector3(0, 1, 0),
-	AXIS_Z: new THREE.Vector3(0, 0, 1),
-	DEG_TO_RAD: Math.PI / 180,
-	
 	get() {
 		return this.geometry;
 	},
@@ -22,24 +71,11 @@ Geometry.prototype = {
 		return this.center.length() * 2;
 	},
 	
-	getDirectionVector(yaw, roll, pitch) {
-		var v = new THREE.Vector3(0, 1, 0);
-		
-		v.applyAxisAngle(this.AXIS_X, pitch * this.DEG_TO_RAD);
-		v.applyAxisAngle(this.AXIS_Z, yaw * this.DEG_TO_RAD);
-		v.applyAxisAngle(this.AXIS_Y, roll * this.DEG_TO_RAD);
-		
-		return v;
-	},
-	
 	getBranches() {
 		var branches = [];
+		var states = [];
 		var workingBranches = [[]];
-		
-		var at = new THREE.Vector3(0, 0, 0);
-		var yaw = 0;
-		var roll = 0;
-		var pitch = 0;
+		var state = new TurtleState();
 		
 		var xMin = 0;
 		var xMax = 0;
@@ -48,52 +84,54 @@ Geometry.prototype = {
 		var zMin = 0;
 		var zMax = 0;
 		
-		workingBranches[workingBranches.length - 1].push(at.clone());
+		workingBranches[workingBranches.length - 1].push(state.get());
 		
 		for(var index = 0; index < this.symbols.length; ++index) {
 			switch(this.symbols[index].symbol) {
 				case "[":
-					workingBranches.push([at.clone()]);
+					states.push(new TurtleState(state));
+					workingBranches.push([state.get()]);
 					break;
 				case "]":
+					state = states.pop();
 					branches.push(workingBranches.pop());
 					break;
-				case "+": // Yaw right
-					yaw += Number(this.angle);
+				case "+":
+					state.rotateYaw(this.angle);
 					break;
-				case "-": // Yaw left
-					yaw -= Number(this.angle);
+				case "-":
+					state.rotateYaw(-this.angle);
 					break;
-				case "/": // Roll right
-					roll += Number(this.angle);
+				case "/":
+					state.rotateRoll(this.angle);
 					break;
-				case "\\": // Roll left
-					roll -= Number(this.angle);
+				case "\\":
+					state.rotateRoll(-this.angle);
 					break;
-				case "^": // Pitch up
-					pitch += Number(this.angle);
+				case "^":
+					state.rotatePitch(this.angle);
 					break;
-				case "_": // Pitch down
-					pitch -= Number(this.angle);
+				case "_":
+					state.rotatePitch(-this.angle);
 					break;
 				default:
 					if(this.constants.indexOf(this.symbols[index].symbol) == -1) {
-						at = at.add(this.getDirectionVector(yaw, roll, pitch));
+						var pos = state.extrude();
 						
-						if(at.x < xMin)
-							xMin = at.x;
-						if(at.x > xMax)
-							xMax = at.x;
-						if(at.y < yMin)
-							yMin = at.y;
-						if(at.y > yMax)
-							yMax = at.y;
-						if(at.z < zMin)
-							zMin = at.z;
-						if(at.z > zMax)
-							zMax = at.z;
+						if(pos.x < xMin)
+							xMin = pos.x;
+						if(pos.x > xMax)
+							xMax = pos.x;
+						if(pos.y < yMin)
+							yMin = pos.y;
+						if(pos.y > yMax)
+							yMax = pos.y;
+						if(pos.z < zMin)
+							zMin = pos.z;
+						if(pos.z > zMax)
+							zMax = pos.z;
 						
-						workingBranches[workingBranches.length - 1].push(at.clone());
+						workingBranches[workingBranches.length - 1].push(pos);
 					}
 					break;
 			}
@@ -117,10 +155,10 @@ Geometry.prototype = {
 			if(branches[i].length > 1)
 				scene.add(new THREE.Mesh(new THREE.TubeGeometry(
 					new THREE.CatmullRomCurve3(branches[i]),
-					branches[i].length * 6,
-					0.1,
-					5,
-					false), new THREE.MeshNormalMaterial()));
+						branches[i].length * 6,
+						0.2,
+						5,
+						false), new THREE.MeshNormalMaterial()));
 					
 		return scene;
 	}
