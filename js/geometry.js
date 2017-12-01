@@ -36,15 +36,15 @@ TurtleState.prototype = {
 	},
 	
 	rotateYaw(yaw) {
-		this.yaw += yaw;
+		this.yaw += Number(yaw);
 	},
 	
 	rotateRoll(roll) {
-		this.roll += roll;
+		this.roll += Number(roll);
 	},
 	
 	rotatePitch(pitch) {
-		this.pitch += pitch;
+		this.pitch += Number(pitch);
 	},
 	
 	get() {
