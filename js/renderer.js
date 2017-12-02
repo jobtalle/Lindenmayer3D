@@ -17,10 +17,12 @@ Renderer.prototype = {
 	CAMERA_ZOOM_SPEED: 0.2,
 	CAMERA_ZOOM_MIN: 0.1,
 	CAMERA_ZOOM_MAX: 6,
+	CAMERA_ROTATION_INITIAL: Math.PI / 4,
+	CAMERA_PITCH_INITIAL: Math.PI / 4,
 	LIGHT_ANGLE_OFFSET: Math.PI / 4,
 	LIGHT_ANGLE_PITCH: Math.PI / 4,
 	ZNEAR: 0.1,
-	ZFAR: 10000,
+	ZFAR: 1000,
 	
 	getScene(symbols, constants, angle) {
 		var geometry = new Geometry(symbols, constants, angle);
@@ -40,8 +42,8 @@ Renderer.prototype = {
 	},
 	
 	initializeView() {
-		this.cameraRotation = Math.PI / 4;
-		this.cameraPitch = Math.PI / 4;
+		this.cameraRotation = this.CAMERA_ROTATION_INITIAL;
+		this.cameraPitch = this.CAMERA_PITCH_INITIAL;
 		this.cameraZoom = 1.7;
 		this.camera.center = null;
 	},

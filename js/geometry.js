@@ -177,6 +177,7 @@ Geometry.prototype = {
 	build(light) {
 		var branches = this.getBranches();
 		var scene = new THREE.Scene();
+		var geometry = new THREE.Geometry();
 		var material = new THREE.MeshPhongMaterial({
 			emissive: this.MESH_EMISSIVE,
 			color: this.MESH_COLOR,
@@ -185,14 +186,24 @@ Geometry.prototype = {
 		});
 		
 		for(var i = 0; i < branches.length; ++i)
-			if(branches[i].length > 1)
-				scene.add(new THREE.Mesh(new THREE.TubeGeometry(
+			if(branches[i].length > 1) {
+				geometry.merge(new THREE.TubeGeometry(
 					new THREE.CatmullRomCurve3(branches[i]),
-						branches[i].length + 1,
+						branches[i].length * 4,
 						0.2,
 						5,
-						false), material));
-					
+						false));
+				
+				/*
+				var sphere = new THREE.Mesh(new THREE.SphereGeometry(0.3, 5, 5), material);
+				var canopy = branches[i][branches[i].length - 1];
+				sphere.position.set(canopy.x, canopy.y, canopy.z);
+				
+				scene.add(sphere);
+				*/
+			}
+		
+		scene.add(new THREE.Mesh(geometry, material));
 		scene.add(light);
 					
 		return scene;
