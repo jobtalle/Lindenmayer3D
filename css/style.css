@@ -20,6 +20,10 @@
 	-webkit-box-sizing: border-box; 
 }
 
+#controls select {
+	width: 100%;
+}
+
 #controls button {
 	width: 100%;
 }

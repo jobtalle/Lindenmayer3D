@@ -8,7 +8,7 @@ function TurtleState(other) {
 		this.pitch = 0;
 	}
 	else {
-		this.at = other.at.clone(); // To prevent z-fighting, add epsilon
+		this.at = other.at.clone();
 		this.yaw = other.yaw;
 		this.roll = other.roll;
 		this.pitch = other.pitch;

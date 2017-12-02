@@ -92,6 +92,10 @@ Controller.prototype = {
 		return document.getElementById("l3d-angle");
 	},
 	
+	getRenderStyle() {
+		return document.getElementById("l3d-render-style");
+	},
+	
 	buildSystem() {
 		this.system = new Lindenmayer();
 		
@@ -110,13 +114,13 @@ Controller.prototype = {
 	clearResult() {
 		this.getResult().value = "";
 		
-		this.renderer.render(this.getResult().value, this.getConstants().value, this.getAngle().value);
+		this.renderer.createScene([], this.getConstants().value, this.getAngle().value, this.getRenderStyle().value);
 	},
 	
 	setResult(result) {
 		this.getResult().value = Lindenmayer.prototype.toString(result);
 		
-		this.renderer.render(result, this.getConstants().value, this.getAngle().value);
+		this.renderer.createScene(result, this.getConstants().value, this.getAngle().value, this.getRenderStyle().value);
 	},
 	
 	step() {

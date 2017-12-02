@@ -15,8 +15,46 @@
 			<div id="controls">
 				<table>
 					<tr>
+						<td>Preset:</td>
+						<td>
+							<select id="l3d-preset" onchange="preset()" value="">
+								<option value="l-preset-koch-snowflake">Koch snowflake</option>
+								<option value="l-preset-sierpinski-arrowhead-curve">Sierpińsky arrowhead curve</option>
+								<option value="l-preset-plant">Plant</option>
+								<option value="l-preset-plant-2">Plant 2</option>
+								<option value="l-preset-hilbert-curve">Hilbert curve</option>
+								<option value="l-gosper-curve">Gosper curve</option>
+								<option value="l-preset-mosaic">Mosaic</option>
+								<option value="l-preset-squares-fractal">Squares fractal</option>
+							</select>
+						</td>
+						<td>
+							<select id="l3d-render-style" onchange="controller.buildSystem()" value=""/>
+								<option value="l3d-render-tubes">Tubes</option>
+								<option value="l3d-render-lines">Lines</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
 						<td>Axiom:</td>
 						<td><input id="l3d-axiom" type="text" value="A"/></td>
+						<td>
+							<table>
+								<tr>
+									<td>Iterations:</td>
+									<td>
+										<input id="l3d-iterations" type="text" onchange="controller.buildSystem()" value="3"/>
+									</td>
+									<td>
+										<button onclick="">Go</button>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>Angle increment:</td>
+						<td><input id="l3d-angle" type="text" onchange="controller.buildSystem()" value="26"/></td>
 						<td>
 							<table>
 								<tr>
@@ -31,15 +69,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Angle increment:</td>
-						<td><input id="l3d-angle" type="text" onchange="controller.buildSystem()" value="26"/></td>
-						<td id="result-column" rowspan="8" style="width: 300px">
-							<textarea id="l3d-result" readonly></textarea>
-						</td>
-					</tr>
-					<tr>
 						<td>Constants:</td>
 						<td><input id="l3d-constants" type="text" onchange="controller.buildSystem()"/></td>
+						<td id="result-column" rowspan="7" style="width: 300px">
+							<textarea id="l3d-result" readonly></textarea>
+						</td>
 					</tr>
 					<tr>
 						<td>Rule 1:</td>

@@ -17,6 +17,7 @@ Renderer.prototype = {
 	CAMERA_ZOOM_SPEED: 0.2,
 	CAMERA_ZOOM_MIN: 0.1,
 	CAMERA_ZOOM_MAX: 6,
+	CAMERA_ZOOM_INITIAL: 1.7,
 	CAMERA_ROTATION_INITIAL: Math.PI / 4,
 	CAMERA_PITCH_INITIAL: Math.PI / 4,
 	LIGHT_ANGLE_OFFSET: Math.PI / 4,
@@ -24,16 +25,6 @@ Renderer.prototype = {
 	LIGHT_COLOR: new THREE.Color("rgb(255, 255, 255)"),
 	ZNEAR: 0.1,
 	ZFAR: 1000,
-	
-	getScene(symbols, constants, angle) {
-		var geometry = new Geometry(symbols, constants, angle);
-		var scene = geometry.build(this.light);
-		
-		this.camera.center = geometry.getCenter();
-		this.cameraRadius = geometry.getRadius();
-		
-		return scene;
-	},
 	
 	initializeCamera() {
 		this.camera = new THREE.PerspectiveCamera(
@@ -46,7 +37,7 @@ Renderer.prototype = {
 	initializeView() {
 		this.cameraRotation = this.CAMERA_ROTATION_INITIAL;
 		this.cameraPitch = this.CAMERA_PITCH_INITIAL;
-		this.cameraZoom = 1.7;
+		this.cameraZoom = this.CAMERA_ZOOM_INITIAL;
 		this.camera.center = null;
 	},
 	
@@ -88,6 +79,7 @@ Renderer.prototype = {
 		else if(this.cameraPitch > this.CAMERA_PITCH_MAX)
 			this.cameraPitch = this.CAMERA_PITCH_MAX;
 		
+		this.placeCamera();
 		this.paint();
 	},
 	
@@ -97,6 +89,7 @@ Renderer.prototype = {
 		if(this.cameraZoom < this.CAMERA_ZOOM_MIN)
 			this.cameraZoom = this.CAMERA_ZOOM_MIN;
 		
+		this.placeCamera();
 		this.paint();
 	},
 	
@@ -106,19 +99,25 @@ Renderer.prototype = {
 		if(this.cameraZoom > this.CAMERA_ZOOM_MAX)
 			this.cameraZoom = this.CAMERA_ZOOM_MAX;
 		
+		this.placeCamera();
 		this.paint();
 	},
 	
-	render(symbols, constants, angle) {
+	createScene(symbols, constants, angle, renderStyle) {
 		if(this.scene != null)
 			this.scene.dispose();
 			
-		this.scene = this.getScene(symbols, constants, angle);
+		var geometry = new Geometry(symbols, constants, angle);
+		
+		this.scene = geometry.build(this.light, renderStyle);
+		this.camera.center = geometry.getCenter();
+		this.cameraRadius = geometry.getRadius();
+		
+		this.placeCamera();
 		this.paint();
 	},
 	
 	paint() {
-		this.placeCamera();
 		this.renderer.render(this.scene.get(), this.camera);
 	}
 }
