@@ -8,7 +8,7 @@ function TurtleState(other) {
 		this.pitch = 0;
 	}
 	else {
-		this.at = other.at.clone();
+		this.at = other.at.clone(); // To prevent z-fighting, add epsilon
 		this.yaw = other.yaw;
 		this.roll = other.roll;
 		this.pitch = other.pitch;
@@ -65,6 +65,29 @@ TurtleState.prototype = {
 	}
 }
 
+function Scene(geometry, material, light) {
+	this.scene = new THREE.Scene();
+	this.geometry = geometry;
+	this.mesh = new THREE.Mesh(this.geometry, material);
+	this.light = light;
+	
+	this.scene.add(this.mesh);
+	this.scene.add(light);
+}
+
+Scene.prototype = {
+	dispose() {
+		this.scene.remove(this.mesh);
+		this.scene.remove(this.light);
+		
+		this.geometry.dispose();
+	},
+	
+	get() {
+		return this.scene;
+	}
+}
+
 function Geometry(symbols, constants, angle) {
 	this.symbols = symbols;
 	this.constants = constants;
@@ -72,8 +95,15 @@ function Geometry(symbols, constants, angle) {
 }
 
 Geometry.prototype = {
-	MESH_COLOR: new THREE.Color("rgb(255, 0, 0)"),
-	MESH_EMISSIVE: new THREE.Color("rgb(255, 0, 0)").clone().multiplyScalar(0.3),
+	TUBE_PRECISION: 5,
+	TUBE_RADIUS: 0.2,
+	END_SPHERE: new THREE.SphereGeometry(0.3, 5, 5),
+	MATERIAL: new THREE.MeshPhongMaterial({
+			emissive: new THREE.Color("rgb(255, 0, 0)").multiplyScalar(0.3),
+			color: new THREE.Color("rgb(255, 0, 0)"),
+			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
+			shininess: 25
+		}),
 	
 	get() {
 		return this.geometry;
@@ -176,36 +206,29 @@ Geometry.prototype = {
 	
 	build(light) {
 		var branches = this.getBranches();
-		var scene = new THREE.Scene();
 		var geometry = new THREE.Geometry();
-		var material = new THREE.MeshPhongMaterial({
-			emissive: this.MESH_EMISSIVE,
-			color: this.MESH_COLOR,
-			specular: 0x555555,
-			shininess: 30
-		});
 		
 		for(var i = 0; i < branches.length; ++i)
 			if(branches[i].length > 1) {
-				geometry.merge(new THREE.TubeGeometry(
+				var tube = new THREE.TubeGeometry(
 					new THREE.CatmullRomCurve3(branches[i]),
 						branches[i].length * 4,
-						0.2,
-						5,
-						false));
+						this.TUBE_RADIUS,
+						this.TUBE_PRECISION,
+						false);
+						
+				if(i == 0)
+					geometry.merge(this.END_SPHERE);
+						
+				geometry.merge(tube);
+				tube.dispose();
 				
-				/*
-				var sphere = new THREE.Mesh(new THREE.SphereGeometry(0.3, 5, 5), material);
 				var canopy = branches[i][branches[i].length - 1];
-				sphere.position.set(canopy.x, canopy.y, canopy.z);
+				var canopyMatrix = new THREE.Matrix4().makeTranslation(canopy.x, canopy.y, canopy.z);
 				
-				scene.add(sphere);
-				*/
+				geometry.merge(this.END_SPHERE, canopyMatrix);
 			}
-		
-		scene.add(new THREE.Mesh(geometry, material));
-		scene.add(light);
-					
-		return scene;
+			
+		return new Scene(geometry, this.MATERIAL, light);
 	}
 }

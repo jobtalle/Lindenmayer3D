@@ -21,12 +21,14 @@ Renderer.prototype = {
 	CAMERA_PITCH_INITIAL: Math.PI / 4,
 	LIGHT_ANGLE_OFFSET: Math.PI / 4,
 	LIGHT_ANGLE_PITCH: Math.PI / 4,
+	LIGHT_COLOR: new THREE.Color("rgb(255, 255, 255)"),
 	ZNEAR: 0.1,
 	ZFAR: 1000,
 	
 	getScene(symbols, constants, angle) {
 		var geometry = new Geometry(symbols, constants, angle);
 		var scene = geometry.build(this.light);
+		
 		this.camera.center = geometry.getCenter();
 		this.cameraRadius = geometry.getRadius();
 		
@@ -49,7 +51,7 @@ Renderer.prototype = {
 	},
 	
 	initializeLight() {
-		this.light = new THREE.DirectionalLight(0xffffff);
+		this.light = new THREE.DirectionalLight(this.LIGHT_COLOR);
 	},
 	
 	placeCamera() {
@@ -108,13 +110,15 @@ Renderer.prototype = {
 	},
 	
 	render(symbols, constants, angle) {
-		// TODO: Free scene
+		if(this.scene != null)
+			this.scene.dispose();
+			
 		this.scene = this.getScene(symbols, constants, angle);
 		this.paint();
 	},
 	
 	paint() {
 		this.placeCamera();
-		this.renderer.render(this.scene, this.camera);
+		this.renderer.render(this.scene.get(), this.camera);
 	}
 }
