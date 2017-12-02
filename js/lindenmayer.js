@@ -204,8 +204,6 @@ function Lindenmayer() {
 }
 
 Lindenmayer.prototype = {
-	MAX_LENGTH: 16000,
-	
 	setConstants(constants) {
 		this.constants = constants;
 	},
@@ -300,9 +298,6 @@ Lindenmayer.prototype = {
 				successor = sentence[symbol + 1];
 			
 			newSentence = newSentence.concat(this.parseSymbol(predecessor, sentence[symbol], successor));
-			
-			if(newSentence.length > this.MAX_LENGTH)
-				return newSentence;
 		}
 		
 		return newSentence;
