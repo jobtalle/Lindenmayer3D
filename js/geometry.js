@@ -1,4 +1,6 @@
 function TurtleState(other) {
+	this.rotated = true;
+	
 	if(other == undefined) {
 		this.at = new THREE.Vector3(0, 0, 0);
 		this.yaw = 0;
@@ -37,14 +39,25 @@ TurtleState.prototype = {
 	
 	rotateYaw(yaw) {
 		this.yaw += Number(yaw);
+		this.rotated = true;
 	},
 	
 	rotateRoll(roll) {
 		this.roll += Number(roll);
+		this.rotated = true;
 	},
 	
 	rotatePitch(pitch) {
 		this.pitch += Number(pitch);
+		this.rotated = true;
+	},
+	
+	isRotated() {
+		return this.rotated;
+	},
+	
+	setNotRotated() {
+		this.rotated = false;
 	},
 	
 	get() {
@@ -90,6 +103,7 @@ Geometry.prototype = {
 			switch(this.symbols[index].symbol) {
 				case "[":
 					states.push(new TurtleState(state));
+					state.setNotRotated();
 					workingBranches.push([state.get()]);
 					break;
 				case "]":
@@ -130,6 +144,11 @@ Geometry.prototype = {
 							zMin = pos.z;
 						if(pos.z > zMax)
 							zMax = pos.z;
+						
+						if(!state.isRotated())
+							workingBranches[workingBranches.length - 1].pop();
+						else
+							state.setNotRotated();
 						
 						workingBranches[workingBranches.length - 1].push(pos);
 					}
