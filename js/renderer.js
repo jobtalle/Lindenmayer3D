@@ -14,6 +14,9 @@ Renderer.prototype = {
 	CAMERA_ANGLE: 70,
 	CAMERA_PITCH_MIN: 0.0001,
 	CAMERA_PITCH_MAX: Math.PI - 0.0001,
+	CAMERA_ZOOM_SPEED: 0.2,
+	CAMERA_ZOOM_MIN: 0.1,
+	CAMERA_ZOOM_MAX: 6,
 	LIGHT_ANGLE_OFFSET: Math.PI / 4,
 	LIGHT_ANGLE_PITCH: Math.PI / 4,
 	ZNEAR: 0.1,
@@ -23,7 +26,7 @@ Renderer.prototype = {
 		var geometry = new Geometry(symbols, constants, angle);
 		var scene = geometry.build(this.light);
 		this.camera.center = geometry.getCenter();
-		this.cameraZoom = geometry.getRadius();
+		this.cameraRadius = geometry.getRadius();
 		
 		return scene;
 	},
@@ -39,7 +42,7 @@ Renderer.prototype = {
 	initializeView() {
 		this.cameraRotation = Math.PI / 4;
 		this.cameraPitch = Math.PI / 4;
-		this.cameraZoom = 5;
+		this.cameraZoom = 1.7;
 		this.camera.center = null;
 	},
 	
@@ -51,9 +54,9 @@ Renderer.prototype = {
 		if(this.camera.center == null)
 			return;
 		
-		this.camera.position.x = this.camera.center.x + Math.cos(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
-		this.camera.position.z = this.camera.center.z + Math.sin(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
-		this.camera.position.y = this.camera.center.y + Math.cos(this.cameraPitch) * this.cameraZoom;
+		this.camera.position.x = this.camera.center.x + Math.cos(this.cameraRotation) * this.cameraRadius * this.cameraZoom * Math.sin(this.cameraPitch);
+		this.camera.position.z = this.camera.center.z + Math.sin(this.cameraRotation) * this.cameraRadius * this.cameraZoom * Math.sin(this.cameraPitch);
+		this.camera.position.y = this.camera.center.y + Math.cos(this.cameraPitch) * this.cameraRadius * this.cameraZoom;
 		this.camera.lookAt(this.camera.center.x, this.camera.center.y, this.camera.center.z);
 		
 		this.light.position.set(
@@ -80,6 +83,24 @@ Renderer.prototype = {
 			this.cameraPitch = this.CAMERA_PITCH_MIN;
 		else if(this.cameraPitch > this.CAMERA_PITCH_MAX)
 			this.cameraPitch = this.CAMERA_PITCH_MAX;
+		
+		this.paint();
+	},
+	
+	zoomIn() {
+		this.cameraZoom *= 1 - this.CAMERA_ZOOM_SPEED;
+		
+		if(this.cameraZoom < this.CAMERA_ZOOM_MIN)
+			this.cameraZoom = this.CAMERA_ZOOM_MIN;
+		
+		this.paint();
+	},
+	
+	zoomOut() {
+		this.cameraZoom *= 1 + this.CAMERA_ZOOM_SPEED;
+		
+		if(this.cameraZoom > this.CAMERA_ZOOM_MAX)
+			this.cameraZoom = this.CAMERA_ZOOM_MAX;
 		
 		this.paint();
 	},

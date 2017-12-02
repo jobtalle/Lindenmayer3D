@@ -28,6 +28,14 @@ Controller.prototype = {
 		element.addEventListener("mousemove", this.mouseMove.bind(this));
 		element.addEventListener("mouseup", this.mouseUp.bind(this));
 		element.addEventListener("mouseleave", this.mouseUp.bind(this));
+		element.addEventListener("mousewheel", this.mouseScroll.bind(this));
+	},
+	
+	mouseScroll(event) {
+		if(event.wheelDelta > 0)
+			this.renderer.zoomIn();
+		else
+			this.renderer.zoomOut();
 	},
 	
 	mouseDown(event) {

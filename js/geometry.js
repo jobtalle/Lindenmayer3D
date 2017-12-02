@@ -84,7 +84,7 @@ Geometry.prototype = {
 	},
 	
 	getRadius() {
-		return this.center.length() * 2;
+		return this.radius;
 	},
 	
 	getBranches() {
@@ -161,10 +161,15 @@ Geometry.prototype = {
 		
 		branches.push(workingBranches.pop());
 		
+		var xRange = xMax - xMin;
+		var yRange = yMax - yMin;
+		var zRange = zMax - zMin;
+		
 		this.center = new THREE.Vector3(
-			xMin + (xMax - xMin) / 2,
-			yMin + (yMax - yMin) / 2,
-			zMin + (zMax - zMin) / 2);
+			xMin + xRange / 2,
+			yMin + yRange / 2,
+			zMin + zRange / 2);
+		this.radius = new THREE.Vector3(xRange, yRange, zRange).length() / 2;
 		
 		return branches;
 	},
@@ -183,7 +188,7 @@ Geometry.prototype = {
 			if(branches[i].length > 1)
 				scene.add(new THREE.Mesh(new THREE.TubeGeometry(
 					new THREE.CatmullRomCurve3(branches[i]),
-						branches[i].length * 3,
+						branches[i].length + 1,
 						0.2,
 						5,
 						false), material));
