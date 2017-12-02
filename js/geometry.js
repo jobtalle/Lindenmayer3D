@@ -72,6 +72,9 @@ function Geometry(symbols, constants, angle) {
 }
 
 Geometry.prototype = {
+	MESH_COLOR: new THREE.Color("rgb(255, 0, 0)"),
+	MESH_EMISSIVE: new THREE.Color("rgb(255, 0, 0)").clone().multiplyScalar(0.3),
+	
 	get() {
 		return this.geometry;
 	},
@@ -166,18 +169,26 @@ Geometry.prototype = {
 		return branches;
 	},
 	
-	build() {
+	build(light) {
 		var branches = this.getBranches();
 		var scene = new THREE.Scene();
+		var material = new THREE.MeshPhongMaterial({
+			emissive: this.MESH_EMISSIVE,
+			color: this.MESH_COLOR,
+			specular: 0x555555,
+			shininess: 30
+		});
 		
 		for(var i = 0; i < branches.length; ++i)
 			if(branches[i].length > 1)
 				scene.add(new THREE.Mesh(new THREE.TubeGeometry(
 					new THREE.CatmullRomCurve3(branches[i]),
-						branches[i].length * 6,
+						branches[i].length * 3,
 						0.2,
 						5,
-						false), new THREE.MeshNormalMaterial()));
+						false), material));
+					
+		scene.add(light);
 					
 		return scene;
 	}

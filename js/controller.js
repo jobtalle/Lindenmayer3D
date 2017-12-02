@@ -5,8 +5,6 @@ function Controller(element) {
 }
 
 Controller.prototype = {
-	MAX_SYMBOLS: 3200,
-	
 	buildRuleField(index) {
 		var node = document.createElement("tr");
 		node.innerHTML = "<td>Rule " + index + ":</td><td><input id=\"l3d-rule" + index + "\" type=\"text\" onchange=\"controller.buildSystem()\"/></td>";
@@ -103,10 +101,12 @@ Controller.prototype = {
 	
 	clearResult() {
 		this.getResult().value = "";
+		
+		this.renderer.render(this.getResult().value, this.getConstants().value, this.getAngle().value);
 	},
 	
 	setResult(result) {
-		this.getResult().value = Lindenmayer.prototype.toString(result.slice(0, this.MAX_SYMBOLS));
+		this.getResult().value = Lindenmayer.prototype.toString(result);
 		
 		this.renderer.render(result, this.getConstants().value, this.getAngle().value);
 	},

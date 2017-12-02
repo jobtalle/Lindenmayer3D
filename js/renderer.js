@@ -5,6 +5,7 @@ function Renderer(element) {
 	
 	this.initializeCamera();
 	this.initializeView();
+	this.initializeLight();
 	this.initializeRenderer(element);
 }
 
@@ -13,13 +14,14 @@ Renderer.prototype = {
 	CAMERA_ANGLE: 70,
 	CAMERA_PITCH_MIN: 0.0001,
 	CAMERA_PITCH_MAX: Math.PI - 0.0001,
+	LIGHT_ANGLE_OFFSET: Math.PI / 4,
+	LIGHT_ANGLE_PITCH: Math.PI / 4,
 	ZNEAR: 0.1,
 	ZFAR: 10000,
 	
 	getScene(symbols, constants, angle) {
 		var geometry = new Geometry(symbols, constants, angle);
-		
-		var scene = geometry.build();
+		var scene = geometry.build(this.light);
 		this.camera.center = geometry.getCenter();
 		this.cameraZoom = geometry.getRadius();
 		
@@ -41,6 +43,10 @@ Renderer.prototype = {
 		this.camera.center = null;
 	},
 	
+	initializeLight() {
+		this.light = new THREE.DirectionalLight(0xffffff);
+	},
+	
 	placeCamera() {
 		if(this.camera.center == null)
 			return;
@@ -48,8 +54,12 @@ Renderer.prototype = {
 		this.camera.position.x = this.camera.center.x + Math.cos(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
 		this.camera.position.z = this.camera.center.z + Math.sin(this.cameraRotation) * this.cameraZoom * Math.sin(this.cameraPitch);
 		this.camera.position.y = this.camera.center.y + Math.cos(this.cameraPitch) * this.cameraZoom;
-		
 		this.camera.lookAt(this.camera.center.x, this.camera.center.y, this.camera.center.z);
+		
+		this.light.position.set(
+			Math.cos(this.cameraRotation + this.LIGHT_ANGLE_OFFSET) * Math.sin(this.LIGHT_ANGLE_PITCH),
+			Math.cos(this.LIGHT_ANGLE_PITCH),
+			Math.sin(this.cameraRotation + this.LIGHT_ANGLE_OFFSET) * Math.sin(this.LIGHT_ANGLE_PITCH));
 	},
 	
 	initializeRenderer(element) {
@@ -75,6 +85,7 @@ Renderer.prototype = {
 	},
 	
 	render(symbols, constants, angle) {
+		// TODO: Free scene
 		this.scene = this.getScene(symbols, constants, angle);
 		this.paint();
 	},
