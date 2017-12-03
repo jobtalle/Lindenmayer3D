@@ -1,5 +1,5 @@
 function TurtleState(angle, other) {
-	this.rotated = true;
+	this.onLine = false;
 	
 	if(other == undefined) {
 		this.setQuaternions(angle);
@@ -61,40 +61,40 @@ TurtleState.prototype = {
 	
 	yawAdd() {
 		this.quaternion.multiply(this.yawAddQuat);
-		this.rotated = true;
+		this.setOnLine(false);
 	},
 	
 	yawSubtract() {
 		this.quaternion.multiply(this.yawSubtractQuat);
-		this.rotated = true;
+		this.setOnLine(false);
 	},
 	
 	rollAdd() {
 		this.quaternion.multiply(this.rollAddQuat);
-		this.rotated = true;
+		this.setOnLine(false);
 	},
 	
 	rollSubtract() {
 		this.quaternion.multiply(this.rollSubtractQuat);
-		this.rotated = true;
+		this.setOnLine(false);
 	},
 	
 	pitchAdd() {
 		this.quaternion.multiply(this.pitchAddQuat);
-		this.rotated = true;
+		this.setOnLine(false);
 	},
 	
 	pitchSubtract() {
 		this.quaternion.multiply(this.pitchSubtractQuat);
-		this.rotated = true;
+		this.setOnLine(false);
 	},
 	
-	isRotated() {
-		return this.rotated;
+	isOnLine() {
+		return this.onLine;
 	},
 	
-	setRotated(rotated) {
-		this.rotated = rotated;
+	setOnLine(onLine) {
+		this.onLine = onLine;
 	},
 	
 	get() {
@@ -173,7 +173,7 @@ Geometry.prototype = {
 				case "[":
 					states.push(new TurtleState(this.angle, state));
 					
-					state.setRotated();
+					state.setOnLine(false);
 					workingBranches.push([state.get()]);
 					break;
 				case "]":
@@ -215,10 +215,10 @@ Geometry.prototype = {
 						if(pos.z > zMax)
 							zMax = pos.z;
 						
-						if(!state.isRotated())
+						if(state.isOnLine())
 							workingBranches[workingBranches.length - 1].pop();
 						else
-							state.setRotated(false);
+							state.setOnLine(true);
 						
 						workingBranches[workingBranches.length - 1].push(pos);
 					}
