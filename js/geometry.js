@@ -178,6 +178,7 @@ Geometry.prototype = {
 					break;
 				case "]":
 					state = states.pop();
+					
 					branches.push(workingBranches.pop());
 					break;
 				case "+":
@@ -245,9 +246,14 @@ Geometry.prototype = {
 		var geometry = new THREE.Geometry();
 		
 		for(var i = 0; i < branches.length; ++i) {
+			var branch = branches[i];
+			
+			if(branch.length <= 1)
+				continue;
+			
 			var tube = new THREE.TubeGeometry(
-				new THREE.CatmullRomCurve3(branches[i]),
-					branches[i].length * 4,
+				new THREE.CatmullRomCurve3(branch),
+					branch.length * 4,
 					this.TUBE_RADIUS,
 					this.TUBE_PRECISION,
 					false);
@@ -272,6 +278,9 @@ Geometry.prototype = {
 		
 		for(var i = 0; i < branches.length; ++i) {
 			var branch = branches[i];
+			
+			if(branch.length <= 1)
+				continue;
 		
 			for(var j = 0; j < branch.length - 1; ++j) {
 				geometry.vertices.push(branch[j]);
