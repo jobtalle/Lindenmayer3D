@@ -22,9 +22,9 @@ Renderer.prototype = {
 	CAMERA_PITCH_INITIAL: Math.PI / 4,
 	LIGHT_ANGLE_OFFSET: Math.PI / 4,
 	LIGHT_ANGLE_PITCH: Math.PI / 4,
-	LIGHT_COLOR: new THREE.Color("rgb(255, 255, 255)"),
+	LIGHT_COLOR: new THREE.Color("rgb(237, 236, 201)"),
 	ZNEAR: 0.1,
-	ZFAR: 1000,
+	ZFAR: 10000,
 	
 	initializeCamera() {
 		this.camera = new THREE.PerspectiveCamera(
@@ -48,6 +48,7 @@ Renderer.prototype = {
 	initializeRenderer(element) {
 		this.renderer = new THREE.WebGLRenderer({
 			antialias: true,
+			alpha: true
 		});
 		this.threeScene = new THREE.Scene();
 		this.renderer.setSize(this.width, this.height);

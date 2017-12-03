@@ -4,7 +4,8 @@
 }
 
 #renderer {
-	background-color: #000000;
+	background-color: #9cb5d6;
+	background: linear-gradient(white, #9cb5d6);
 	width: 800px;
 	height: 600px;
 }

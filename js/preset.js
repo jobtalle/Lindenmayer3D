@@ -11,11 +11,19 @@ function preset() {
 					"A = B[+A][-A][_A][^A]BA",
 					"B = BB"
 				],
+				"4",
+				"lines");
+			break;
+		case "tree":
+			setPreset(
+				"FFFA",
+				"24",
+				"",
+				[
+					"A = [+FFFA]/////[+FFFA]/////[+FFFA]"
+				],
 				"3",
 				"tubes");
-			break;
-		case "gosper-curve":
-			
 			break;
 	}
 }

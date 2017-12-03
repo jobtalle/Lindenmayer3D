@@ -24,8 +24,8 @@ TurtleState.prototype = {
 	getDirectionVector() {
 		var v = new THREE.Vector3(0, 1, 0);
 		
-		v.applyAxisAngle(this.AXIS_X, this.pitch * this.DEG_TO_RAD);
 		v.applyAxisAngle(this.AXIS_Z, this.yaw * this.DEG_TO_RAD);
+		v.applyAxisAngle(this.AXIS_X, this.pitch * this.DEG_TO_RAD);
 		v.applyAxisAngle(this.AXIS_Y, this.roll * this.DEG_TO_RAD);
 		
 		return v;
@@ -101,8 +101,7 @@ Geometry.prototype = {
 			shininess: 25
 		}),
 	MATERIAL_LINE: new THREE.LineBasicMaterial({
-		color: 0xffffff,
-		linewidth: 1
+		color: new THREE.Color("rgb(88, 140, 90)")
 	}),
 	
 	get() {
