@@ -2,6 +2,17 @@ function preset() {
 	var name = document.getElementById("l3d-preset").value;
 	
 	switch(name) {
+		case "hilbert-curve":
+			setPreset(
+				"A",
+				"90",
+				"A",
+				[
+					"A = ^\\AB^\\ABA-B^//ABA_B+//ABA-B/A-/"
+				],
+				"3",
+				"tubes");
+			break;
 		case "plant":
 			setPreset(
 				"A",
@@ -12,7 +23,7 @@ function preset() {
 					"B = BB"
 				],
 				"4",
-				"lines");
+				"tubes");
 			break;
 		case "tree":
 			setPreset(
