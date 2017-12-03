@@ -20,7 +20,8 @@ function preset() {
 				"",
 				[
 					"A = B[+A][-A][_A][^A]BA",
-					"B = BB"
+					"B = B\B",
+					"B = A/B"
 				],
 				"4",
 				"tubes");
