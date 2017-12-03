@@ -93,8 +93,8 @@ TurtleState.prototype = {
 		return this.rotated;
 	},
 	
-	setNotRotated() {
-		this.rotated = false;
+	setRotated(rotated) {
+		this.rotated = rotated;
 	},
 	
 	get() {
@@ -172,7 +172,8 @@ Geometry.prototype = {
 			switch(this.symbols[index].symbol) {
 				case "[":
 					states.push(new TurtleState(this.angle, state));
-					state.setNotRotated();
+					
+					state.setRotated();
 					workingBranches.push([state.get()]);
 					break;
 				case "]":
@@ -217,7 +218,7 @@ Geometry.prototype = {
 						if(!state.isRotated())
 							workingBranches[workingBranches.length - 1].pop();
 						else
-							state.setNotRotated();
+							state.setRotated(false);
 						
 						workingBranches[workingBranches.length - 1].push(pos);
 					}

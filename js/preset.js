@@ -22,7 +22,7 @@ function preset() {
 				[
 					"A = [+FFFA]/////[+FFFA]/////[+FFFA]"
 				],
-				"3",
+				"4",
 				"tubes");
 			break;
 	}
