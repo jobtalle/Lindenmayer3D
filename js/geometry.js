@@ -1,17 +1,22 @@
-function TurtleState(other) {
+function TurtleState(angle, other) {
 	this.rotated = true;
 	
 	if(other == undefined) {
+		this.setQuaternions(angle);
+		
 		this.at = new THREE.Vector3(0, 0, 0);
-		this.yaw = 0;
-		this.roll = 0;
-		this.pitch = 0;
+		this.quaternion = new THREE.Quaternion();
 	}
 	else {
 		this.at = other.at.clone();
-		this.yaw = other.yaw;
-		this.roll = other.roll;
-		this.pitch = other.pitch;
+		this.quaternion = other.quaternion.clone();
+		
+		this.yawAddQuat = other.yawAddQuat;
+		this.yawSubtractQuat = other.yawSubtractQuat;
+		this.rollAddQuat = other.rollAddQuat;
+		this.rollSubtractQuat = other.rollSubtractQuat;
+		this.pitchAddQuat = other.pitchAddQuat;
+		this.pitchSubtractQuat = other.pitchSubtractQuat;
 	}
 }
 
@@ -21,12 +26,29 @@ TurtleState.prototype = {
 	AXIS_Z: new THREE.Vector3(0, 0, 1),
 	DEG_TO_RAD: Math.PI / 180,
 	
+	setQuaternions(angle) {
+		angle *= this.DEG_TO_RAD;
+		
+		this.yawAddQuat = new THREE.Quaternion();
+		this.yawAddQuat.setFromAxisAngle(this.AXIS_Z, angle);
+		this.yawSubtractQuat = new THREE.Quaternion();
+		this.yawSubtractQuat.setFromAxisAngle(this.AXIS_Z, -angle);
+		
+		this.rollAddQuat = new THREE.Quaternion();
+		this.rollAddQuat.setFromAxisAngle(this.AXIS_Y, angle);
+		this.rollSubtractQuat = new THREE.Quaternion();
+		this.rollSubtractQuat.setFromAxisAngle(this.AXIS_Y, -angle);
+		
+		this.pitchAddQuat = new THREE.Quaternion();
+		this.pitchAddQuat.setFromAxisAngle(this.AXIS_X, angle);
+		this.pitchSubtractQuat = new THREE.Quaternion();
+		this.pitchSubtractQuat.setFromAxisAngle(this.AXIS_X, -angle);
+	},
+	
 	getDirectionVector() {
 		var v = new THREE.Vector3(0, 1, 0);
 		
-		v.applyAxisAngle(this.AXIS_Z, this.yaw * this.DEG_TO_RAD);
-		v.applyAxisAngle(this.AXIS_X, this.pitch * this.DEG_TO_RAD);
-		v.applyAxisAngle(this.AXIS_Y, this.roll * this.DEG_TO_RAD);
+		v.applyQuaternion(this.quaternion);
 		
 		return v;
 	},
@@ -37,18 +59,33 @@ TurtleState.prototype = {
 		return this.at.clone();
 	},
 	
-	rotateYaw(yaw) {
-		this.yaw += Number(yaw);
+	yawAdd() {
+		this.quaternion.multiply(this.yawAddQuat);
 		this.rotated = true;
 	},
 	
-	rotateRoll(roll) {
-		this.roll += Number(roll);
+	yawSubtract() {
+		this.quaternion.multiply(this.yawSubtractQuat);
 		this.rotated = true;
 	},
 	
-	rotatePitch(pitch) {
-		this.pitch += Number(pitch);
+	rollAdd() {
+		this.quaternion.multiply(this.rollAddQuat);
+		this.rotated = true;
+	},
+	
+	rollSubtract() {
+		this.quaternion.multiply(this.rollSubtractQuat);
+		this.rotated = true;
+	},
+	
+	pitchAdd() {
+		this.quaternion.multiply(this.pitchAddQuat);
+		this.rotated = true;
+	},
+	
+	pitchSubtract() {
+		this.quaternion.multiply(this.pitchSubtractQuat);
 		this.rotated = true;
 	},
 	
@@ -120,7 +157,7 @@ Geometry.prototype = {
 		var branches = [];
 		var states = [];
 		var workingBranches = [[]];
-		var state = new TurtleState();
+		var state = new TurtleState(this.angle);
 		
 		var xMin = 0;
 		var xMax = 0;
@@ -134,7 +171,7 @@ Geometry.prototype = {
 		for(var index = 0; index < this.symbols.length; ++index) {
 			switch(this.symbols[index].symbol) {
 				case "[":
-					states.push(new TurtleState(state));
+					states.push(new TurtleState(this.angle, state));
 					state.setNotRotated();
 					workingBranches.push([state.get()]);
 					break;
@@ -143,22 +180,22 @@ Geometry.prototype = {
 					branches.push(workingBranches.pop());
 					break;
 				case "+":
-					state.rotateYaw(this.angle);
+					state.yawAdd();
 					break;
 				case "-":
-					state.rotateYaw(-this.angle);
+					state.yawSubtract();
 					break;
 				case "/":
-					state.rotateRoll(this.angle);
+					state.rollAdd();
 					break;
 				case "\\":
-					state.rotateRoll(-this.angle);
+					state.rollSubtract();
 					break;
 				case "^":
-					state.rotatePitch(this.angle);
+					state.pitchAdd();
 					break;
 				case "_":
-					state.rotatePitch(-this.angle);
+					state.pitchSubtract();
 					break;
 				default:
 					if(this.constants.indexOf(this.symbols[index].symbol) == -1) {
