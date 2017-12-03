@@ -24,7 +24,7 @@
 							</select>
 						</td>
 						<td>
-							<select id="l3d-render-style" onchange="controller.changeSystem()" value="">
+							<select id="l3d-render-style" onchange="controller.changeSystem(); controller.go();" value="">
 								<option value="lines">Lines</option>
 								<option value="tubes">Tubes</option>
 							</select>
@@ -103,6 +103,6 @@
 				</table>
 			</div>
 		</div>
-		<script>controller = new Controller(document.getElementById("renderer")); preset();</script>
+		<script>controller = new Controller(document.getElementById("renderer")); preset(); controller.go();</script>
 	</body>
 </html>

@@ -65,22 +65,22 @@ TurtleState.prototype = {
 	}
 }
 
-function Scene(scene, geometry, material, light) {
+function Scene(scene, content, light) {
 	this.scene = scene;
-	this.mesh = new THREE.Mesh(geometry, material);
+	this.content = content;
 	this.light = light;
 	
-	this.scene.add(this.mesh);
+	this.scene.add(this.content);
 	this.scene.add(light);
 }
 
 Scene.prototype = {
 	dispose() {
-		this.scene.remove(this.mesh);
+		this.scene.remove(this.content);
 		this.scene.remove(this.light);
 		
-		this.mesh.geometry.dispose();
-		this.mesh.material.dispose();
+		this.content.geometry.dispose();
+		this.content.material.dispose();
 	}
 }
 
@@ -94,12 +94,16 @@ Geometry.prototype = {
 	TUBE_PRECISION: 5,
 	TUBE_RADIUS: 0.2,
 	END_SPHERE: new THREE.SphereGeometry(0.3, 5, 5),
-	MATERIAL: new THREE.MeshPhongMaterial({
-			emissive: new THREE.Color("rgb(255, 0, 0)").multiplyScalar(0.3),
-			color: new THREE.Color("rgb(255, 0, 0)"),
+	MATERIAL_TUBE: new THREE.MeshPhongMaterial({
+			emissive: new THREE.Color("rgb(153, 204, 0)").multiplyScalar(0.3),
+			color: new THREE.Color("rgb(153, 204, 0)"),
 			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
 			shininess: 25
 		}),
+	MATERIAL_LINE: new THREE.LineBasicMaterial({
+		color: 0xffffff,
+		linewidth: 1
+	}),
 	
 	get() {
 		return this.geometry;
@@ -200,31 +204,61 @@ Geometry.prototype = {
 		return branches;
 	},
 	
-	build(scene, light, renderStyle) {
-		var branches = this.getBranches();
+	buildGeometryTubes(branches) {
 		var geometry = new THREE.Geometry();
 		
-		for(var i = 0; i < branches.length; ++i)
-			if(branches[i].length > 1) {
-				var tube = new THREE.TubeGeometry(
-					new THREE.CatmullRomCurve3(branches[i]),
-						branches[i].length * 4,
-						this.TUBE_RADIUS,
-						this.TUBE_PRECISION,
-						false);
-						
-				if(i == 0)
-					geometry.merge(this.END_SPHERE);
-						
-				geometry.merge(tube);
-				tube.dispose();
-				
-				var canopy = branches[i][branches[i].length - 1];
-				var canopyMatrix = new THREE.Matrix4().makeTranslation(canopy.x, canopy.y, canopy.z);
-				
-				geometry.merge(this.END_SPHERE, canopyMatrix);
-			}
+		for(var i = 0; i < branches.length; ++i) {
+			var tube = new THREE.TubeGeometry(
+				new THREE.CatmullRomCurve3(branches[i]),
+					branches[i].length * 4,
+					this.TUBE_RADIUS,
+					this.TUBE_PRECISION,
+					false);
+					
+			if(i == 0)
+				geometry.merge(this.END_SPHERE);
+					
+			geometry.merge(tube);
+			tube.dispose();
 			
-		return new Scene(scene, geometry, this.MATERIAL, light);
+			var canopy = branches[i][branches[i].length - 1];
+			var canopyMatrix = new THREE.Matrix4().makeTranslation(canopy.x, canopy.y, canopy.z);
+			
+			geometry.merge(this.END_SPHERE, canopyMatrix);
+		}
+		
+		return new THREE.Mesh(geometry, this.MATERIAL_TUBE);
+	},
+	
+	buildGeometryLines(branches) {
+		var geometry = new THREE.Geometry();
+		
+		for(var i = 0; i < branches.length; ++i) {
+			var branch = branches[i];
+		
+			for(var j = 0; j < branch.length - 1; ++j) {
+				geometry.vertices.push(branch[j]);
+				geometry.vertices.push(branch[j + 1]);
+			}
+		}
+		
+		return new THREE.LineSegments(geometry, this.MATERIAL_LINE);
+	},
+	
+	build(scene, light, renderStyle) {
+		var branches = this.getBranches();
+		var content;
+			
+		switch(renderStyle) {
+			default:
+			case "lines":
+				content = this.buildGeometryLines(branches);
+				break;
+			case "tubes":
+				content = this.buildGeometryTubes(branches);
+				break;
+		}
+			
+		return new Scene(scene, content, light);
 	}
 }

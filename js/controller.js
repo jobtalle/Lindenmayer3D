@@ -145,6 +145,8 @@ Controller.prototype = {
 			this.setResult(this.system.process(this.getAxiom().value, 1));
 		else
 			this.setResult(this.system.process(this.getResult().value, 1));
+		
+		++this.getIterations().value;
 	},
 	
 	go() {

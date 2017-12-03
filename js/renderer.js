@@ -46,7 +46,9 @@ Renderer.prototype = {
 	},
 	
 	initializeRenderer(element) {
-		this.renderer = new THREE.WebGLRenderer({antialias: true});
+		this.renderer = new THREE.WebGLRenderer({
+			antialias: true,
+		});
 		this.threeScene = new THREE.Scene();
 		this.renderer.setSize(this.width, this.height);
 		
