@@ -8,6 +8,7 @@
 		<script src="js/renderer.js"></script>
 		<script src="js/geometry.js"></script>
 		<script src="js/controller.js"></script>
+		<script src="js/preset.js"></script>
 	</head>
 	<body>
 		<div id="wrapper">
@@ -17,44 +18,38 @@
 					<tr>
 						<td>Preset:</td>
 						<td>
-							<select id="l3d-preset" onchange="preset()" value="">
-								<option value="l-preset-koch-snowflake">Koch snowflake</option>
-								<option value="l-preset-sierpinski-arrowhead-curve">Sierpińsky arrowhead curve</option>
-								<option value="l-preset-plant">Plant</option>
-								<option value="l-preset-plant-2">Plant 2</option>
-								<option value="l-preset-hilbert-curve">Hilbert curve</option>
-								<option value="l-gosper-curve">Gosper curve</option>
-								<option value="l-preset-mosaic">Mosaic</option>
-								<option value="l-preset-squares-fractal">Squares fractal</option>
+							<select id="l3d-preset" onchange="preset(); controller.go();" value="">
+								<option value="plant">Plant</option>
+								<option value="gosper-curve">Gosper curve</option>
 							</select>
 						</td>
 						<td>
-							<select id="l3d-render-style" onchange="controller.buildSystem()" value="">
-								<option value="l3d-render-tubes">Tubes</option>
-								<option value="l3d-render-lines">Lines</option>
+							<select id="l3d-render-style" onchange="controller.changeSystem()" value="">
+								<option value="lines">Lines</option>
+								<option value="tubes">Tubes</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>Axiom:</td>
-						<td><input id="l3d-axiom" type="text" value="A"/></td>
+						<td><input id="l3d-axiom" type="text"></td>
 						<td>
 							<table>
 								<tr>
 									<td>Iterations:</td>
 									<td>
-										<input id="l3d-iterations" type="text" onchange="controller.buildSystem()" value="3"/>
+										<input id="l3d-iterations" type="text" onchange="controller.changeSystem()"/>
 									</td>
 									<td>
-										<button onclick="">Go</button>
+										<button onclick="controller.go()">Go</button>
 									</td>
 								</tr>
 							</table>
 						</td>
 					</tr>
 					<tr>
-						<td>Angle increment:</td>
-						<td><input id="l3d-angle" type="text" onchange="controller.buildSystem()" value="26"/></td>
+						<td>Angle:</td>
+						<td><input id="l3d-angle" type="text" onchange="controller.changeSystem()"/></td>
 						<td>
 							<table>
 								<tr>
@@ -70,34 +65,34 @@
 					</tr>
 					<tr>
 						<td>Constants:</td>
-						<td><input id="l3d-constants" type="text" onchange="controller.buildSystem()"/></td>
+						<td><input id="l3d-constants" type="text" onchange="controller.changeSystem()"/></td>
 						<td id="result-column" rowspan="7" style="width: 300px">
 							<textarea id="l3d-result" readonly></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>Rule 1:</td>
-						<td><input id="l3d-rule1" type="text" onchange="controller.buildSystem()" value="A = B[+A][-A]BA"/></td>
+						<td><input id="l3d-rule1" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr>
 						<td>Rule 2:</td>
-						<td><input id="l3d-rule2" type="text" onchange="controller.buildSystem()" value="B = BB"/></td>
+						<td><input id="l3d-rule2" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr>
 						<td>Rule 3:</td>
-						<td><input id="l3d-rule3" type="text" onchange="controller.buildSystem()"/></td>
+						<td><input id="l3d-rule3" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr>
 						<td>Rule 4:</td>
-						<td><input id="l3d-rule4" type="text" onchange="controller.buildSystem()"/></td>
+						<td><input id="l3d-rule4" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr>
 						<td>Rule 5:</td>
-						<td><input id="l3d-rule5" type="text" onchange="controller.buildSystem()"/></td>
+						<td><input id="l3d-rule5" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr>
 						<td>Rule 6:</td>
-						<td><input id="l3d-rule6" type="text" onchange="controller.buildSystem()"/></td>
+						<td><input id="l3d-rule6" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr id="add-rule-button">
 						<td></td>
@@ -108,6 +103,6 @@
 				</table>
 			</div>
 		</div>
-		<script>controller = new Controller(document.getElementById("renderer"));</script>
+		<script>controller = new Controller(document.getElementById("renderer")); preset();</script>
 	</body>
 </html>

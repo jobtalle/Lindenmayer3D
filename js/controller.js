@@ -1,13 +1,15 @@
 function Controller(element) {
+	this.upToDate = true;
+	
 	this.renderer = new Renderer(element);
 	this.addListeners(element);
-	this.buildSystem();
+	this.changeSystem();
 }
 
 Controller.prototype = {
 	buildRuleField(index) {
 		var node = document.createElement("tr");
-		node.innerHTML = "<td>Rule " + index + ":</td><td><input id=\"l3d-rule" + index + "\" type=\"text\" onchange=\"controller.buildSystem()\"/></td>";
+		node.innerHTML = "<td>Rule " + index + ":</td><td><input id=\"l3d-rule" + index + "\" type=\"text\" onchange=\"controller.changeSystem()\"/></td>";
 		
 		return node;
 	},
@@ -82,6 +84,10 @@ Controller.prototype = {
 		return document.getElementById("l3d-axiom");
 	},
 	
+	getIterations() {
+		return document.getElementById("l3d-iterations");
+	},
+	
 	getConstants() {
 		return document.getElementById("l3d-constants");
 	},
@@ -98,10 +104,16 @@ Controller.prototype = {
 		return document.getElementById("l3d-render-style");
 	},
 	
+	changeSystem() {
+		this.upToDate = false;
+	},
+	
 	buildSystem() {
 		this.system = new Lindenmayer();
 		
 		this.addRules(this.system);
+		
+		this.upToDate = true;
 	},
 	
 	addRules(system) {
@@ -126,9 +138,19 @@ Controller.prototype = {
 	},
 	
 	step() {
+		if(!this.upToDate)
+			this.buildSystem();
+		
 		if(this.getResult().value == "")
 			this.setResult(this.system.process(this.getAxiom().value, 1));
 		else
 			this.setResult(this.system.process(this.getResult().value, 1));
+	},
+	
+	go() {
+		if(!this.upToDate)
+			this.buildSystem();
+		
+		this.setResult(this.system.process(this.getAxiom().value, this.getIterations().value));
 	}
 }

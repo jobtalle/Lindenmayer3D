@@ -65,10 +65,9 @@ TurtleState.prototype = {
 	}
 }
 
-function Scene(geometry, material, light) {
-	this.scene = new THREE.Scene();
-	this.geometry = geometry;
-	this.mesh = new THREE.Mesh(this.geometry, material);
+function Scene(scene, geometry, material, light) {
+	this.scene = scene;
+	this.mesh = new THREE.Mesh(geometry, material);
 	this.light = light;
 	
 	this.scene.add(this.mesh);
@@ -80,11 +79,8 @@ Scene.prototype = {
 		this.scene.remove(this.mesh);
 		this.scene.remove(this.light);
 		
-		this.geometry.dispose();
-	},
-	
-	get() {
-		return this.scene;
+		this.mesh.geometry.dispose();
+		this.mesh.material.dispose();
 	}
 }
 
@@ -204,7 +200,7 @@ Geometry.prototype = {
 		return branches;
 	},
 	
-	build(light) {
+	build(scene, light, renderStyle) {
 		var branches = this.getBranches();
 		var geometry = new THREE.Geometry();
 		
@@ -229,6 +225,6 @@ Geometry.prototype = {
 				geometry.merge(this.END_SPHERE, canopyMatrix);
 			}
 			
-		return new Scene(geometry, this.MATERIAL, light);
+		return new Scene(scene, geometry, this.MATERIAL, light);
 	}
 }

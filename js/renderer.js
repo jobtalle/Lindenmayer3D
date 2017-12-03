@@ -45,6 +45,14 @@ Renderer.prototype = {
 		this.light = new THREE.DirectionalLight(this.LIGHT_COLOR);
 	},
 	
+	initializeRenderer(element) {
+		this.renderer = new THREE.WebGLRenderer({antialias: true});
+		this.threeScene = new THREE.Scene();
+		this.renderer.setSize(this.width, this.height);
+		
+		element.appendChild(this.renderer.domElement);
+	},
+	
 	placeCamera() {
 		if(this.camera.center == null)
 			return;
@@ -58,13 +66,6 @@ Renderer.prototype = {
 			Math.cos(this.cameraRotation + this.LIGHT_ANGLE_OFFSET) * Math.sin(this.LIGHT_ANGLE_PITCH),
 			Math.cos(this.LIGHT_ANGLE_PITCH),
 			Math.sin(this.cameraRotation + this.LIGHT_ANGLE_OFFSET) * Math.sin(this.LIGHT_ANGLE_PITCH));
-	},
-	
-	initializeRenderer(element) {
-		this.renderer = new THREE.WebGLRenderer({antialias: true});
-		this.renderer.setSize(this.width, this.height);
-		
-		element.appendChild(this.renderer.domElement);
 	},
 	
 	moveView(x, y) {
@@ -109,7 +110,7 @@ Renderer.prototype = {
 			
 		var geometry = new Geometry(symbols, constants, angle);
 		
-		this.scene = geometry.build(this.light, renderStyle);
+		this.scene = geometry.build(this.threeScene, this.light, renderStyle);
 		this.camera.center = geometry.getCenter();
 		this.cameraRadius = geometry.getRadius();
 		
@@ -119,6 +120,6 @@ Renderer.prototype = {
 	
 	paint() {
 		if(this.scene != null)
-			this.renderer.render(this.scene.get(), this.camera);
+			this.renderer.render(this.threeScene, this.camera);
 	}
 }
