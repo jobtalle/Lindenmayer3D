@@ -28,22 +28,24 @@ Controller.prototype = {
 		element.addEventListener("mousemove", this.mouseMove.bind(this));
 		element.addEventListener("mouseup", this.mouseUp.bind(this));
 		element.addEventListener("mouseleave", this.mouseUp.bind(this));
-		element.addEventListener("mousewheel", this.mouseScroll.bind(this));
+		element.addEventListener("wheel", this.mouseScroll.bind(this));
 	},
 	
 	mouseScroll(event) {
-		if(event.wheelDelta > 0)
+		event.preventDefault();
+		
+		if(event.deltaY < 0)
 			this.renderer.zoomIn();
 		else
 			this.renderer.zoomOut();
 	},
 	
 	mouseDown(event) {
-		this.dragStart(event.x - this.rendererRect.x, event.y - this.rendererRect.y)
+		this.dragStart(event.x - this.rendererRect.left, event.y - this.rendererRect.top)
 	},
 	
 	mouseMove(event) {
-		this.drag(event.x - this.rendererRect.x, event.y - this.rendererRect.y)
+		this.drag(event.x - this.rendererRect.left, event.y - this.rendererRect.top)
 	},
 	
 	mouseUp(event) {

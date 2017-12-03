@@ -29,7 +29,7 @@
 							</select>
 						</td>
 						<td>
-							<select id="l3d-render-style" onchange="controller.buildSystem()" value=""/>
+							<select id="l3d-render-style" onchange="controller.buildSystem()" value="">
 								<option value="l3d-render-tubes">Tubes</option>
 								<option value="l3d-render-lines">Lines</option>
 							</select>
@@ -100,7 +100,8 @@
 						<td><input id="l3d-rule6" type="text" onchange="controller.buildSystem()"/></td>
 					</tr>
 					<tr id="add-rule-button">
-						<td/><td>
+						<td></td>
+						<td>
 							<button onclick="controller.addRuleField()">Add rule</button>
 						</td>
 					</tr>

@@ -118,6 +118,7 @@ Renderer.prototype = {
 	},
 	
 	paint() {
-		this.renderer.render(this.scene.get(), this.camera);
+		if(this.scene != null)
+			this.renderer.render(this.scene.get(), this.camera);
 	}
 }
