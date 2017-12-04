@@ -89,10 +89,6 @@ Controller.prototype = {
 		return document.getElementById("l3d-iterations");
 	},
 	
-	getMaxSymbols() {
-		return document.getElementById("l3d-max-symbols");
-	},
-	
 	getConstants() {
 		return document.getElementById("l3d-constants");
 	},
@@ -114,7 +110,7 @@ Controller.prototype = {
 	},
 	
 	buildSystem() {
-		this.system = new Lindenmayer(this.getMaxSymbols().value);
+		this.system = new Lindenmayer();
 		
 		this.addRules(this.system);
 		
@@ -136,10 +132,10 @@ Controller.prototype = {
 		this.renderer.createScene([], this.getConstants().value, this.getAngle().value, this.getRenderStyle().value);
 	},
 	
-	setResult(result) {
+	setResult(result, time) {
 		this.getResult().value = Lindenmayer.prototype.toString(result);
 		
-		this.renderer.createScene(result, this.getConstants().value, this.getAngle().value, this.getRenderStyle().value);
+		this.renderer.createScene(result, this.getConstants().value, this.getAngle().value, this.getRenderStyle().value, time);
 	},
 	
 	step() {
@@ -154,12 +150,8 @@ Controller.prototype = {
 			this.setResult(this.system.process(this.getResult().value, 1));
 		
 		++this.getIterations().value;
-		var elapsedTime = (new Date() - startTime);
 		
-		if(this.system.maxLengthExceeded())
-			this.message.setText("Generated one step in " + elapsedTime + "ms, max length exceeded", true);
-		else
-			this.message.setText("Generated one step in " + elapsedTime + "ms", false);
+		this.message.setText("Generated one iteration in " + (new Date() - startTime) + "ms");
 	},
 	
 	go() {
@@ -170,11 +162,6 @@ Controller.prototype = {
 		
 		this.setResult(this.system.process(this.getAxiom().value, this.getIterations().value));
 		
-		var elapsedTime = (new Date() - startTime);
-		
-		if(this.system.maxLengthExceeded())
-			this.message.setText("Generated " + this.getIterations().value + " iterations in " + elapsedTime + "ms, max length exceeded", true);
-		else
-			this.message.setText("Generated " + this.getIterations().value + " iterations in " + elapsedTime + "ms", false);
+		this.message.setText("Generated " + this.getIterations().value + " iterations in " + (new Date() - startTime) + "ms");
 	}
 }

@@ -114,6 +114,7 @@ Renderer.prototype = {
 		var geometry = new Geometry(symbols, constants, angle);
 		
 		this.scene = geometry.build(this.threeScene, this.light, renderStyle);
+		this.timeLeft = geometry.timeLeft;
 		this.camera.center = geometry.getCenter();
 		this.cameraRadius = geometry.getRadius();
 		

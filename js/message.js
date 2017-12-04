@@ -3,7 +3,6 @@ function Message() {
 }
 
 Message.prototype = {
-	COLOR_ERROR: "#FF3333",
 	COLOR_MESSAGE: "#33FF33",
 	
 	getElement() {
@@ -14,13 +13,9 @@ Message.prototype = {
 		return document.getElementById("message-text");
 	},
 	
-	setText(text, error) {
+	setText(text) {
 		this.getElement().style.transition = "0s";
-		
-		if(error)
-			this.getElement().style.background = this.COLOR_ERROR;
-		else
-			this.getElement().style.background = this.COLOR_MESSAGE;
+		this.getElement().style.background = this.COLOR_MESSAGE;
 		
 		this.getText().innerHTML = text;
 		
