@@ -105,17 +105,19 @@ function Scene(scene, content, light) {
 	this.content = content;
 	this.light = light;
 	
-	this.scene.add(this.content);
+	for(var i = 0; i < this.content.length; ++i)
+		this.scene.add(this.content[i]);
 	this.scene.add(light);
 }
 
 Scene.prototype = {
 	dispose() {
-		this.scene.remove(this.content);
-		this.scene.remove(this.light);
+		for(var i = 0; i < this.content.length; ++i) {
+			this.scene.remove(this.content[i]);
+			this.content[i].geometry.dispose();
+		}
 		
-		this.content.geometry.dispose();
-		this.content.material.dispose();
+		this.scene.remove(this.light);
 	}
 }
 
@@ -135,8 +137,20 @@ Geometry.prototype = {
 			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
 			shininess: 25
 		}),
+	MATERIAL_CUBES: new THREE.MeshPhongMaterial({
+			emissive: new THREE.Color("rgb(151, 200, 219)").multiplyScalar(0.3),
+			color: new THREE.Color("rgb(151, 200, 219)"),
+			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
+			shininess: 30
+		}),
+	MATERIAL_BRANCH: new THREE.MeshPhongMaterial({
+			emissive: new THREE.Color("rgb(196, 159, 113)").multiplyScalar(0.3),
+			color: new THREE.Color("rgb(196, 159, 113)"),
+			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
+			shininess: 4
+		}),
 	MATERIAL_LINE: new THREE.LineBasicMaterial({
-		color: new THREE.Color("rgb(88, 140, 90)")
+		color: new THREE.Color("rgb(255, 255, 255)")
 	}),
 	MATERIAL_WIREFRAME: new THREE.LineBasicMaterial({
 		color: new THREE.Color("rgb(255, 255, 255)")
@@ -271,7 +285,7 @@ Geometry.prototype = {
 			geometry.merge(this.END_SPHERE, canopyMatrix);
 		}
 		
-		return new THREE.Mesh(geometry, this.MATERIAL_TUBE);
+		return [new THREE.Mesh(geometry, this.MATERIAL_TUBE)];
 	},
 	
 	buildGeometryLines(branches) {
@@ -289,7 +303,7 @@ Geometry.prototype = {
 			}
 		}
 		
-		return new THREE.LineSegments(geometry, this.MATERIAL_LINE);
+		return [new THREE.LineSegments(geometry, this.MATERIAL_LINE)];
 	},
 	
 	buildGeometryWireframe(branches) {
@@ -315,7 +329,54 @@ Geometry.prototype = {
 		var wireframeGeometry = new THREE.WireframeGeometry(geometry);
 		geometry.dispose();
 		
-		return new THREE.LineSegments(wireframeGeometry, this.MATERIAL_WIREFRAME);
+		return [new THREE.LineSegments(wireframeGeometry, this.MATERIAL_WIREFRAME)];
+	},
+	
+	buildGeometryPlant(branches) {
+		var geometry = new THREE.Geometry();
+		
+		for(var i = 0; i < branches.length; ++i) {
+			var branch = branches[i];
+			
+			if(branch.length <= 1)
+				continue;
+			
+			var tube = new THREE.TubeGeometry(
+				new THREE.CatmullRomCurve3(branch),
+					(branch.length - 1) * 4,
+					this.TUBE_RADIUS,
+					this.TUBE_PRECISION,
+					false);
+					
+			geometry.merge(tube);
+			tube.dispose();
+		}
+		
+		return [new THREE.Mesh(geometry, this.MATERIAL_BRANCH)];
+	},
+	
+	buildGeometryCubes(branches) {
+		var geometry = new THREE.Geometry();
+		
+		for(var i = 0; i < branches.length; ++i) {
+			var branch = branches[i];
+			
+			if(branch.length <= 1)
+				continue;
+			
+			for(var j = 0; j < branch.length; ++j) {
+				var box = new THREE.BoxGeometry(1, 1, 1);
+				var boxTransform = new THREE.Matrix4().makeTranslation(
+					branch[j].x,
+					branch[j].y,
+					branch[j].z);
+				
+				geometry.merge(box, boxTransform);
+				box.dispose();
+			}
+		}
+		
+		return [new THREE.Mesh(geometry, this.MATERIAL_CUBES)];
 	},
 	
 	build(scene, light, renderStyle) {
@@ -332,6 +393,12 @@ Geometry.prototype = {
 				break;
 			case "wireframe":
 				content = this.buildGeometryWireframe(branches);
+				break;
+			case "plant":
+				content = this.buildGeometryPlant(branches);
+				break;
+			case "cubes":
+				content = this.buildGeometryCubes(branches);
 				break;
 		}
 			
