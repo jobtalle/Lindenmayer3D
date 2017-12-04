@@ -24,7 +24,7 @@ function preset() {
 					"B = A/B"
 				],
 				"4",
-				"tubes");
+				"plant");
 			break;
 		case "tree":
 			setPreset(
@@ -37,7 +37,7 @@ function preset() {
 					"B = ////B"
 				],
 				"5",
-				"tubes");
+				"plant");
 			break;
 	}
 }

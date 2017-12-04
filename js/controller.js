@@ -1,6 +1,7 @@
 function Controller(element) {
 	this.upToDate = true;
 	
+	this.message = new Message();
 	this.renderer = new Renderer(element);
 	this.addListeners(element);
 	this.changeSystem();
@@ -88,6 +89,10 @@ Controller.prototype = {
 		return document.getElementById("l3d-iterations");
 	},
 	
+	getMaxSymbols() {
+		return document.getElementById("l3d-max-symbols");
+	},
+	
 	getConstants() {
 		return document.getElementById("l3d-constants");
 	},
@@ -109,7 +114,7 @@ Controller.prototype = {
 	},
 	
 	buildSystem() {
-		this.system = new Lindenmayer();
+		this.system = new Lindenmayer(this.getMaxSymbols().value);
 		
 		this.addRules(this.system);
 		
@@ -138,6 +143,8 @@ Controller.prototype = {
 	},
 	
 	step() {
+		var startTime = new Date();
+		
 		if(!this.upToDate)
 			this.buildSystem();
 		
@@ -147,12 +154,27 @@ Controller.prototype = {
 			this.setResult(this.system.process(this.getResult().value, 1));
 		
 		++this.getIterations().value;
+		var elapsedTime = (new Date() - startTime);
+		
+		if(this.system.maxLengthExceeded())
+			this.message.setText("Generated one step in " + elapsedTime + "ms, max length exceeded", true);
+		else
+			this.message.setText("Generated one step in " + elapsedTime + "ms", false);
 	},
 	
 	go() {
+		var startTime = new Date();
+		
 		if(!this.upToDate)
 			this.buildSystem();
 		
 		this.setResult(this.system.process(this.getAxiom().value, this.getIterations().value));
+		
+		var elapsedTime = (new Date() - startTime);
+		
+		if(this.system.maxLengthExceeded())
+			this.message.setText("Generated " + this.getIterations().value + " iterations in " + elapsedTime + "ms, max length exceeded", true);
+		else
+			this.message.setText("Generated " + this.getIterations().value + " iterations in " + elapsedTime + "ms", false);
 	}
 }

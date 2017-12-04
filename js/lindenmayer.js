@@ -198,9 +198,10 @@ Symbol.prototype = {
 	}
 }
 
-function Lindenmayer() {
+function Lindenmayer(maxSymbols) {
 	this.rules = [];
 	this.constants = "";
+	this.maxSymbols = maxSymbols;
 }
 
 Lindenmayer.prototype = {
@@ -223,9 +224,10 @@ Lindenmayer.prototype = {
 	
 	process(axiom, iterations) {
 		var axiom = this.toSymbols(axiom.replace(/\s/g, ""));
+		var iteration = 0;
 		
 		for(var iteration = 0; iteration < iterations; ++iteration)
-			axiom = this.applyRules(axiom);
+			axiom = this.applyRules(axiom, this.maxSymbols);
 		
 		return axiom;
 	},
@@ -284,8 +286,14 @@ Lindenmayer.prototype = {
 		}
 	},
 	
-	applyRules(sentence) {
+	maxLengthExceeded() {
+		return this.exceededLength;
+	},
+	
+	applyRules(sentence, maxSymbols) {
 		var newSentence = [];
+		
+		this.exceededLength = false;
 		
 		for(var symbol = 0; symbol < sentence.length; ++symbol) {
 			var predecessor = null;
@@ -298,6 +306,12 @@ Lindenmayer.prototype = {
 				successor = sentence[symbol + 1];
 			
 			newSentence = newSentence.concat(this.parseSymbol(predecessor, sentence[symbol], successor));
+			
+			if(maxSymbols != undefined && newSentence.length > maxSymbols) {
+				this.exceededLength = true;
+				
+				break;
+			}
 		}
 		
 		return newSentence;

@@ -9,7 +9,17 @@
 	height: 600px;
 }
 
+#message-bar {
+	position: relative;
+	display: block;
+}
+
+#message-text {
+	position: relative;
+}
+
 #controls {
+	display: block;
 	padding-top: 5px;
 }
 

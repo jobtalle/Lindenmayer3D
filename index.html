@@ -9,10 +9,14 @@
 		<script src="js/geometry.js"></script>
 		<script src="js/controller.js"></script>
 		<script src="js/preset.js"></script>
+		<script src="js/message.js"></script>
 	</head>
 	<body>
 		<div id="wrapper">
-			<div id="renderer"></div> 
+			<div id="renderer"></div>
+			<div id="message-bar">
+				<span id="message-text"></span>
+			</div>
 			<div id="controls">
 				<table>
 					<tr>
@@ -68,11 +72,15 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Constants:</td>
-						<td><input id="l3d-constants" type="text" onchange="controller.changeSystem()"/></td>
-						<td id="result-column" rowspan="7" style="width: 300px">
+						<td>Symbol limit:</td>
+						<td><input id="l3d-max-symbols" type="text" onchange="controller.changeSystem()" value="80000"/></td>
+						<td id="result-column" rowspan="8" style="width: 300px">
 							<textarea id="l3d-result" readonly></textarea>
 						</td>
+					</tr>
+					<tr>
+						<td>Constants:</td>
+						<td><input id="l3d-constants" type="text" onchange="controller.changeSystem()"/></td>
 					</tr>
 					<tr>
 						<td>Rule 1:</td>
