@@ -19,15 +19,16 @@
 						<td>Preset:</td>
 						<td>
 							<select id="l3d-preset" onchange="preset(); controller.go();" value="">
+								<option value="tree">Tree</option>
 								<option value="hilbert-curve">Hilbert curve</option>
 								<option value="plant">Plant</option>
-								<option value="tree">Tree</option>
 							</select>
 						</td>
 						<td>
 							<select id="l3d-render-style" onchange="controller.changeSystem(); controller.go();" value="">
 								<option value="lines">Lines</option>
 								<option value="tubes">Tubes</option>
+								<option value="wireframe">Wireframe</option>
 							</select>
 						</td>
 					</tr>

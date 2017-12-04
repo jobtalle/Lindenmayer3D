@@ -28,13 +28,15 @@ function preset() {
 			break;
 		case "tree":
 			setPreset(
-				"FFFA",
-				"24",
+				"BBBBBA",
+				"19",
 				"",
 				[
-					"A = [+FFFA]/////[+FFFA]/////[+FFFA]"
+					"A = [++BBA]/////+BBBA/////",
+					"B = \\\\B",
+					"B = ////B"
 				],
-				"4",
+				"5",
 				"tubes");
 			break;
 	}

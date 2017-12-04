@@ -291,6 +291,40 @@ Geometry.prototype = {
 		return new THREE.LineSegments(geometry, this.MATERIAL_LINE);
 	},
 	
+	buildGeometryWireframe(branches) {
+		var geometry = new THREE.Geometry();
+		
+		for(var i = 0; i < branches.length; ++i) {
+			var branch = branches[i];
+			
+			if(branch.length <= 1)
+				continue;
+			
+			var tube = new THREE.TubeGeometry(
+				new THREE.CatmullRomCurve3(branch),
+					branch.length * 4,
+					this.TUBE_RADIUS,
+					this.TUBE_PRECISION,
+					false);
+					
+			if(i == 0)
+				geometry.merge(this.END_SPHERE);
+					
+			geometry.merge(tube);
+			tube.dispose();
+			
+			var canopy = branches[i][branches[i].length - 1];
+			var canopyMatrix = new THREE.Matrix4().makeTranslation(canopy.x, canopy.y, canopy.z);
+			
+			geometry.merge(this.END_SPHERE, canopyMatrix);
+		}
+		
+		var wireframeGeometry = new THREE.WireframeGeometry(geometry);
+		geometry.dispose();
+		
+		return new THREE.LineSegments(wireframeGeometry, this.MATERIAL_LINE);
+	},
+	
 	build(scene, light, renderStyle) {
 		var branches = this.getBranches();
 		var content;
@@ -302,6 +336,9 @@ Geometry.prototype = {
 				break;
 			case "tubes":
 				content = this.buildGeometryTubes(branches);
+				break;
+			case "wireframe":
+				content = this.buildGeometryWireframe(branches);
 				break;
 		}
 			
