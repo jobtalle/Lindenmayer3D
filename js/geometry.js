@@ -71,12 +71,10 @@ TurtleState.prototype = {
 	
 	rollAdd() {
 		this.quaternion.multiply(this.rollAddQuat);
-		this.setOnLine(false);
 	},
 	
 	rollSubtract() {
 		this.quaternion.multiply(this.rollSubtractQuat);
-		this.setOnLine(false);
 	},
 	
 	pitchAdd() {
@@ -139,6 +137,9 @@ Geometry.prototype = {
 		}),
 	MATERIAL_LINE: new THREE.LineBasicMaterial({
 		color: new THREE.Color("rgb(88, 140, 90)")
+	}),
+	MATERIAL_WIREFRAME: new THREE.LineBasicMaterial({
+		color: new THREE.Color("rgb(255, 255, 255)")
 	}),
 	
 	get() {
@@ -253,7 +254,7 @@ Geometry.prototype = {
 			
 			var tube = new THREE.TubeGeometry(
 				new THREE.CatmullRomCurve3(branch),
-					branch.length * 4,
+					(branch.length - 1) * 4,
 					this.TUBE_RADIUS,
 					this.TUBE_PRECISION,
 					false);
@@ -302,27 +303,19 @@ Geometry.prototype = {
 			
 			var tube = new THREE.TubeGeometry(
 				new THREE.CatmullRomCurve3(branch),
-					branch.length * 4,
+					(branch.length - 1) * 4,
 					this.TUBE_RADIUS,
 					this.TUBE_PRECISION,
 					false);
 					
-			if(i == 0)
-				geometry.merge(this.END_SPHERE);
-					
 			geometry.merge(tube);
 			tube.dispose();
-			
-			var canopy = branches[i][branches[i].length - 1];
-			var canopyMatrix = new THREE.Matrix4().makeTranslation(canopy.x, canopy.y, canopy.z);
-			
-			geometry.merge(this.END_SPHERE, canopyMatrix);
 		}
 		
 		var wireframeGeometry = new THREE.WireframeGeometry(geometry);
 		geometry.dispose();
 		
-		return new THREE.LineSegments(wireframeGeometry, this.MATERIAL_LINE);
+		return new THREE.LineSegments(wireframeGeometry, this.MATERIAL_WIREFRAME);
 	},
 	
 	build(scene, light, renderStyle) {
