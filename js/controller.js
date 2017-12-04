@@ -28,8 +28,11 @@ Controller.prototype = {
 		this.rendererRect = element.getBoundingClientRect();
 		
 		element.addEventListener("mousedown", this.mouseDown.bind(this));
+		element.addEventListener("touchstart", this.mouseDown.bind(this));
 		element.addEventListener("mousemove", this.mouseMove.bind(this));
+		element.addEventListener("touchmove", this.mousemove.bind(this));
 		element.addEventListener("mouseup", this.mouseUp.bind(this));
+		element.addEventListener("touchend", this.mouseUp.bind(this));
 		element.addEventListener("mouseleave", this.mouseUp.bind(this));
 		element.addEventListener("wheel", this.mouseScroll.bind(this));
 	},
