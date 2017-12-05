@@ -39,6 +39,17 @@ function preset() {
 				"5",
 				"plant");
 			break;
+		case "spring":
+			setPreset(
+				"A",
+				"8",
+				"",
+				[
+					"A = A-^A"
+				],
+				"10",
+				"line");
+			break;
 	}
 }
 
