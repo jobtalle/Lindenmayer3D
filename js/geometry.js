@@ -168,7 +168,7 @@ Geometry.prototype = {
 		return this.radius;
 	},
 	
-	getBranches() {
+	getBranches(trim) {
 		var branches = [];
 		var states = [];
 		var workingBranches = [[]];
@@ -231,7 +231,7 @@ Geometry.prototype = {
 						if(pos.z > zMax)
 							zMax = pos.z;
 						
-						if(state.isOnLine())
+						if(state.isOnLine() && trim)
 							workingBranches[workingBranches.length - 1].pop();
 						else
 							state.setOnLine(true);
@@ -380,25 +380,24 @@ Geometry.prototype = {
 	},
 	
 	build(scene, light, renderStyle) {
-		var branches = this.getBranches();
 		var content;
-			
+		
 		switch(renderStyle) {
 			default:
 			case "lines":
-				content = this.buildGeometryLines(branches);
+				content = this.buildGeometryLines(this.getBranches(true));
 				break;
 			case "tubes":
-				content = this.buildGeometryTubes(branches);
+				content = this.buildGeometryTubes(this.getBranches(true));
 				break;
 			case "wireframe":
-				content = this.buildGeometryWireframe(branches);
+				content = this.buildGeometryWireframe(this.getBranches(true));
 				break;
 			case "plant":
-				content = this.buildGeometryPlant(branches);
+				content = this.buildGeometryPlant(this.getBranches(true));
 				break;
 			case "cubes":
-				content = this.buildGeometryCubes(branches);
+				content = this.buildGeometryCubes(this.getBranches(false));
 				break;
 		}
 			

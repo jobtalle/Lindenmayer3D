@@ -51,6 +51,7 @@ Controller.prototype = {
 	},
 	
 	touchMove(event) {
+		console.log(event);
 		this.drag(event.touches[0].clientX - this.rendererRect.left, event.touches[0].clientY - this.rendererRect.top);
 	},
 	
