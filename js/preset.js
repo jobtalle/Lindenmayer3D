@@ -2,6 +2,17 @@ function preset() {
 	var name = document.getElementById("l3d-preset").value;
 	
 	switch(name) {
+		case "test":
+			setPreset(
+				"A(3, 7)",
+				"90",
+				"",
+				[
+					"A(x, y) = A(x + Number(1), y + 1)"
+				],
+				"1",
+				"lines");
+			break;
 		case "hilbert-curve":
 			setPreset(
 				"A",

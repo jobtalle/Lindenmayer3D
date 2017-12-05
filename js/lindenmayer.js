@@ -271,7 +271,7 @@ Lindenmayer.prototype = {
 			
 			if(s.parameters.length > 0)
 				for(var parameter = 0; parameter < s.parameters.length; ++parameter)
-					result.parameters.push(s.functions[parameter](Object.values(rule.key)));
+					result.parameters.push(s.functions[parameter].apply(this, Object.values(rule.key)));
 				
 			returnSymbols.push(result);
 		}
@@ -284,10 +284,8 @@ Lindenmayer.prototype = {
 		
 		if(rules.length == 0)
 			return [symbol];
-		else if(rules.length == 1)
-			return this.applyRule(rules[0], symbol, predecessor, successor);
-		else
-			return this.applyRule(rules[Math.floor(Math.random() * rules.length)], symbol, predecessor, successor);
+		
+		return this.applyRule(rules[Math.floor(Math.random() * rules.length)], symbol, predecessor, successor);
 	},
 	
 	applyRules(sentence) {
