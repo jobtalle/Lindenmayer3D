@@ -28,9 +28,9 @@ Controller.prototype = {
 		this.rendererRect = element.getBoundingClientRect();
 		
 		element.addEventListener("mousedown", this.mouseDown.bind(this));
-		element.addEventListener("touchstart", this.mouseDown.bind(this));
+		element.addEventListener("touchstart", this.touchDown.bind(this));
 		element.addEventListener("mousemove", this.mouseMove.bind(this));
-		element.addEventListener("touchmove", this.mouseMove.bind(this));
+		element.addEventListener("touchmove", this.touchMove.bind(this));
 		element.addEventListener("mouseup", this.mouseUp.bind(this));
 		element.addEventListener("touchend", this.mouseUp.bind(this));
 		element.addEventListener("mouseleave", this.mouseUp.bind(this));
@@ -44,6 +44,14 @@ Controller.prototype = {
 			this.renderer.zoomIn();
 		else
 			this.renderer.zoomOut();
+	},
+	
+	touchDown(event) {
+		this.dragStart(event.touches[i].clientX - this.rendererRect.left, event.touches[i].clientY - this.rendererRect.top);
+	},
+	
+	touchMove(event) {
+		this.drag(event.touches[i].clientX - this.rendererRect.left, event.touches[i].clientY - this.rendererRect.top);
 	},
 	
 	mouseDown(event) {
