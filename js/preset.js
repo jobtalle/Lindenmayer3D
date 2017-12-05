@@ -48,7 +48,7 @@ function preset() {
 					"A = A-^A"
 				],
 				"10",
-				"line");
+				"lines");
 			break;
 	}
 }
