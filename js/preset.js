@@ -2,17 +2,17 @@ function preset() {
 	var name = document.getElementById("l3d-preset").value;
 	
 	switch(name) {
-		case "test":
+		case "spiral":
 			setPreset(
 				"A(0, 1)",
 				"90",
 				"",
 				[
 					"A(x, y) : x < y = BA(x + 1, y)",
-					"A(x, y) : x >= y = A(x, y)"
+					"A(x, y) : x >= y = +A(0, y + 1)"
 				],
-				"1",
-				"lines");
+				"115",
+				"cubes");
 			break;
 		case "hilbert-curve":
 			setPreset(

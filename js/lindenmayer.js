@@ -147,28 +147,8 @@ Symbol.prototype = {
 		this.length = index - startIndex;
 	},
 	
-	getVariablesInString(string) {
-		var variables = [];
-		var matches = string.match(new RegExp(/[a-z_]\w*(?!\w*\s*\()/ig));
-		
-		if(matches == null)
-			return [];
-		
-		for(var index = 0; index < matches.length; ++index)
-			if(variables.indexOf(matches[index]) == -1)
-				variables.push(matches[index]);
-		
-		return variables;
-	},
-	
 	createFunction(parameter) {
-		var variables = this.getVariablesInString(parameter);
-		var parsed = parameter;
-		
-		for(var index = 0; index < variables.length; ++index)
-			parsed = parsed.replace(variables[index], "+" + variables[index]);
-		
-		return "return " + parsed;
+		return "return " + parameter;
 	},
 	
 	createFunctions(keys) {
