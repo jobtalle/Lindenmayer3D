@@ -4,11 +4,12 @@ function preset() {
 	switch(name) {
 		case "test":
 			setPreset(
-				"A(3, 7)",
+				"A(0, 1)",
 				"90",
 				"",
 				[
-					"A(x, y) = A(x + Number(1), y + 1)"
+					"A(x, y) : x < y = BA(x + 1, y)",
+					"A(x, y) : x >= y = A(x, y)"
 				],
 				"1",
 				"lines");

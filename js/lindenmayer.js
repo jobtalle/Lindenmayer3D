@@ -75,7 +75,7 @@ Rule.prototype = {
 		this.key = this.setKey(symbol, predecessor, successor);
 		
 		if(this.head.condition != null)
-			return this.fCondition(Object.values(this.key));
+			return this.fCondition.apply(this, Object.values(this.key));
 		else
 			return true;
 	},
