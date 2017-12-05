@@ -1,8 +1,8 @@
 function RuleHead(string) {
 	var index = 0;
-	var conditionIndex = string.indexOf(":");
-	var predecessorIndex = string.indexOf("<");
-	var successorIndex = string.indexOf(">");
+	var conditionIndex = string.indexOf(this.SYMBOL_CONDITION);
+	var predecessorIndex = string.indexOf(this.SYMBOL_CONTEXT_LEFT);
+	var successorIndex = string.indexOf(this.SYMBOL_CONTEXT_RIGHT);
 	
 	if(conditionIndex != -1) {
 		if(predecessorIndex > conditionIndex)
@@ -33,6 +33,12 @@ function RuleHead(string) {
 		this.condition = null;
 }
 
+RuleHead.prototype = {
+	SYMBOL_CONTEXT_LEFT: "<",
+	SYMBOL_CONTEXT_RIGHT: ">",
+	SYMBOL_CONDITION: ":"
+}
+
 function RuleBody(string) {
 	this.body = Lindenmayer.prototype.toSymbols(string);
 }
@@ -40,8 +46,8 @@ function RuleBody(string) {
 function Rule(string) {
 	var source = string.replace(/\s/g, "");
 	
-	this.head = new RuleHead(source.substring(0, source.lastIndexOf("=")));
-	this.body = new RuleBody(source.substring(source.lastIndexOf("=") + 1));
+	this.head = new RuleHead(source.substring(0, source.lastIndexOf(this.SYMBOL_EQUALS)));
+	this.body = new RuleBody(source.substring(source.lastIndexOf(this.SYMBOL_EQUALS) + 1));
 	this.keys = this.getKeys();
 	this.fCondition = new Function(this.keys, "return " + this.head.condition);
 	
@@ -49,6 +55,8 @@ function Rule(string) {
 }
 
 Rule.prototype = {
+	SYMBOL_EQUALS: "=",
+	
 	addFunctionsToBody() {
 		for(var symbol = 0; symbol < this.body.body.length; ++symbol)
 			this.body.body[symbol].createFunctions(this.keys);
@@ -278,11 +286,8 @@ Lindenmayer.prototype = {
 			return [symbol];
 		else if(rules.length == 1)
 			return this.applyRule(rules[0], symbol, predecessor, successor);
-		else {
-			var ruleIndex = Math.floor(Math.random() * rules.length);
-			
-			return this.applyRule(rules[ruleIndex], symbol, predecessor, successor);
-		}
+		else
+			return this.applyRule(rules[Math.floor(Math.random() * rules.length)], symbol, predecessor, successor);
 	},
 	
 	applyRules(sentence) {

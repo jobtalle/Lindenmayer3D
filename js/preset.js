@@ -23,7 +23,7 @@ function preset() {
 					"B = B\B",
 					"B = A/B"
 				],
-				"4",
+				"3",
 				"plant");
 			break;
 		case "tree":
@@ -32,9 +32,9 @@ function preset() {
 				"19",
 				"",
 				[
-					"A = [++BBA]/////+BBBA/////",
+					"A = [++BBA]/////+BBBA",
 					"B = \\\\B",
-					"B = ////B"
+					"B = B"
 				],
 				"5",
 				"plant");
