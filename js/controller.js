@@ -47,11 +47,11 @@ Controller.prototype = {
 	},
 	
 	touchDown(event) {
-		this.dragStart(event.touches[i].clientX - this.rendererRect.left, event.touches[i].clientY - this.rendererRect.top);
+		this.dragStart(event.touches[0].clientX - this.rendererRect.left, event.touches[0].clientY - this.rendererRect.top);
 	},
 	
 	touchMove(event) {
-		this.drag(event.touches[i].clientX - this.rendererRect.left, event.touches[i].clientY - this.rendererRect.top);
+		this.drag(event.touches[0].clientX - this.rendererRect.left, event.touches[0].clientY - this.rendererRect.top);
 	},
 	
 	mouseDown(event) {
