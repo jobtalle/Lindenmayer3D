@@ -66,14 +66,14 @@ function preset() {
 			setPreset(
 				"EEEA",
 				"4",
-				"A",
+				"",
 				[
 					"A = [++++++++++++++EC]B\^+B[--------------ED]B+BA",
 					"C =[---------EE][+++++++++EE]B__+C",
 					"D = [---------EE][+++++++++EE]B__-D"
 				],
 				"12",
-				"tubes");
+				"lines");
 			break;
 	}
 }
