@@ -62,6 +62,19 @@ function preset() {
 				"8",
 				"tubes");
 			break;
+		case "fern":
+			setPreset(
+				"EEEA",
+				"4",
+				"A",
+				[
+					"A = [++++++++++++++C]B\^+B[--------------D]B+BA",
+					"C =[---------EE][+++++++++EE]B__+C",
+					"D = [---------EE][+++++++++EE]B__-D"
+				],
+				"12",
+				"lines");
+			break;
 	}
 }
 
