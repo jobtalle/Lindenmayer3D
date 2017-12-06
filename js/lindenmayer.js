@@ -147,15 +147,11 @@ Symbol.prototype = {
 		this.length = index - startIndex;
 	},
 	
-	createFunction(parameter) {
-		return "return " + parameter;
-	},
-	
 	createFunctions(keys) {
 		this.functions = [];
 		
 		for(var parameter = 0; parameter < this.parameters.length; ++parameter)
-			this.functions.push(new Function(keys, this.createFunction(this.parameters[parameter])));
+			this.functions.push(new Function(keys, "return " + this.parameters[parameter]));
 	},
 	
 	getArity() {

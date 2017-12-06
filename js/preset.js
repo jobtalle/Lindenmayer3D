@@ -6,12 +6,12 @@ function preset() {
 			setPreset(
 				"A(0, 1)",
 				"90",
-				"",
+				"A",
 				[
 					"A(x, y) : x < y = BA(x + 1, y)",
 					"A(x, y) : x >= y = +A(0, y + 1)"
 				],
-				"115",
+				"116",
 				"cubes");
 			break;
 		case "hilbert-curve":
@@ -23,7 +23,7 @@ function preset() {
 					"A = ^\\AB^\\ABA-B^//ABA_B+//ABA-B/A-/"
 				],
 				"3",
-				"tubes");
+				"lines");
 			break;
 		case "plant":
 			setPreset(
@@ -42,7 +42,7 @@ function preset() {
 			setPreset(
 				"BBBBBA",
 				"19",
-				"",
+				"A",
 				[
 					"A = [++BBA]/////+BBBA",
 					"B = \\\\B",
@@ -54,13 +54,13 @@ function preset() {
 		case "spring":
 			setPreset(
 				"A",
-				"8",
+				"12",
 				"",
 				[
 					"A = A-^A"
 				],
-				"10",
-				"lines");
+				"8",
+				"tubes");
 			break;
 	}
 }
