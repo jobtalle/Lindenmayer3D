@@ -73,7 +73,7 @@ function preset() {
 					"D = [---------EE][+++++++++EE]B__-D"
 				],
 				"12",
-				"lines");
+				"tubes");
 			break;
 	}
 }
