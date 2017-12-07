@@ -4,14 +4,14 @@ function preset() {
 	switch(name) {
 		case "spiral":
 			setPreset(
-				"A(0, 1)",
+				"BA(0, 0)",
 				"90",
 				"A",
 				[
 					"A(x, y) : x < y = BA(x + 1, y)",
-					"A(x, y) : x >= y = +A(0, y + 1)"
+					"A(x, y) : x >= y = +BA(0, y + 1)"
 				],
-				"116",
+				"117",
 				"cubes");
 			break;
 		case "hilbert-curve":
