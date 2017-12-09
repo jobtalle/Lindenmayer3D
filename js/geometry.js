@@ -153,8 +153,7 @@ Geometry.prototype = {
 			emissive: new THREE.Color("rgb(153, 204, 0)").multiplyScalar(0.3),
 			color: new THREE.Color("rgb(153, 204, 0)"),
 			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
-			shininess: 12,
-			side: 2
+			shininess: 12
 		}),
 	MATERIAL_LINE: new THREE.LineBasicMaterial({
 		color: new THREE.Color("rgb(255, 255, 255)")
@@ -201,7 +200,10 @@ Geometry.prototype = {
 				case "]":
 					state = states.pop();
 					
-					branches.push(workingBranches.pop());
+					var branch = workingBranches.pop();
+					
+					if(branch.length > 1)
+						branches.push(branch);
 					break;
 				case "+":
 					state.yawAdd();

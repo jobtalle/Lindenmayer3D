@@ -31,22 +31,23 @@ function preset() {
 				"30",
 				"",
 				[
-					"A = B[+A][-A][_A][^A]BA",
+					"A = B[+A]\\\\\\\\[+A]\\\\\\\\[+A]\\\\\\\\BA",
 					"B = B\B",
 					"B = A/B"
 				],
-				"3",
+				"4",
 				"plant");
 			break;
 		case "tree":
 			setPreset(
 				"BBBBBA",
-				"19",
-				"A",
+				"18",
+				"",
 				[
-					"A = [++BBA]/////+BBBA",
+					"A = [++BB[--C][++C][__C][^^C]A]/////+BBB[--C][++C][__C][^^C]A",
 					"B = \\\\B",
-					"B = B"
+					"B = B",
+					"C ="
 				],
 				"5",
 				"plant");
