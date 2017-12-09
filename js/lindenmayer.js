@@ -205,12 +205,22 @@ Lindenmayer.prototype = {
 		this.rules.push(new Rule(rule));
 	},
 	
-	process(axiom, iterations) {
+	process(axiom, iterations, timeout = 3000) {
+		var lastDate = new Date();
 		var axiom = this.toSymbols(axiom.replace(/\s/g, ""));
 		var iteration = 0;
 		
-		for(var iteration = 0; iteration < iterations; ++iteration)
+		for(var iteration = 0; iteration < iterations; ++iteration) {
 			axiom = this.applyRules(axiom);
+			
+			var date = new Date();
+			timeout -= date - lastDate;
+			
+			if(timeout < 0)
+				return [];
+			
+			lastDate = date;
+		}
 		
 		return axiom;
 	},

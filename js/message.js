@@ -13,9 +13,9 @@ Message.prototype = {
 		return document.getElementById("message-text");
 	},
 	
-	setText(text) {
+	setText(text, color = this.COLOR_MESSAGE) {
 		this.getElement().style.transition = "0s";
-		this.getElement().style.background = this.COLOR_MESSAGE;
+		this.getElement().style.background = color;
 		
 		this.getText().innerHTML = text;
 		

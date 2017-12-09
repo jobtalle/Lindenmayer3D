@@ -172,8 +172,12 @@ Controller.prototype = {
 		if(!this.upToDate)
 			this.buildSystem();
 		
-		this.setResult(this.system.process(this.getAxiom().value, this.getIterations().value));
+		var result = this.system.process(this.getAxiom().value, this.getIterations().value);
+		this.setResult(result);
 		
-		this.message.setText("Generated " + this.getIterations().value + " iterations in " + (new Date() - startTime) + "ms");
+		if(result.length == 0)
+			this.message.setText("Timeout exceeded, try less iterations", "#ff0000");
+		else
+			this.message.setText("Generated " + this.getIterations().value + " iterations in " + (new Date() - startTime) + "ms");
 	}
 }
