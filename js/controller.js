@@ -144,10 +144,10 @@ Controller.prototype = {
 		this.renderer.createScene([], this.getConstants().value, this.getAngle().value, this.getRenderStyle().value);
 	},
 	
-	setResult(result, time) {
+	setResult(result) {
 		this.getResult().value = Lindenmayer.prototype.toString(result);
 		
-		this.renderer.createScene(result, this.getConstants().value, this.getAngle().value, this.getRenderStyle().value, time);
+		this.renderer.createScene(result, this.getConstants().value, this.getAngle().value, this.getRenderStyle().value);
 	},
 	
 	step() {
@@ -157,13 +157,17 @@ Controller.prototype = {
 			this.buildSystem();
 		
 		if(this.getResult().value == "")
-			this.setResult(this.system.process(this.getAxiom().value, 1));
+			var result = this.system.process(this.getAxiom().value, 1);
 		else
-			this.setResult(this.system.process(this.getResult().value, 1));
+			var result = this.system.process(this.getResult().value, 1);
 		
+		this.setResult(result);
 		++this.getIterations().value;
 		
-		this.message.setText("Generated one iteration in " + (new Date() - startTime) + "ms");
+		if(result.length == 0)
+			this.message.setText("Timeout exceeded, try less iterations", "#ff0000");
+		else
+			this.message.setText("Generated one iteration in " + (new Date() - startTime) + "ms");
 	},
 	
 	go() {

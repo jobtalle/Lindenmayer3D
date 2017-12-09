@@ -149,6 +149,13 @@ Geometry.prototype = {
 			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
 			shininess: 4
 		}),
+	MATERIAL_LEAF: new THREE.MeshPhongMaterial({
+			emissive: new THREE.Color("rgb(153, 204, 0)").multiplyScalar(0.3),
+			color: new THREE.Color("rgb(153, 204, 0)"),
+			specular: new THREE.Color("rgb(255, 255, 255)").multiplyScalar(0.3),
+			shininess: 12,
+			side: 2
+		}),
 	MATERIAL_LINE: new THREE.LineBasicMaterial({
 		color: new THREE.Color("rgb(255, 255, 255)")
 	}),
@@ -333,7 +340,8 @@ Geometry.prototype = {
 	},
 	
 	buildGeometryPlant(branches) {
-		var geometry = new THREE.Geometry();
+		var geometryBranches = new THREE.Geometry();
+		var geometryLeaves = new THREE.Geometry();
 		
 		for(var i = 0; i < branches.length; ++i) {
 			var branch = branches[i];
@@ -348,11 +356,38 @@ Geometry.prototype = {
 					this.TUBE_PRECISION,
 					false);
 					
-			geometry.merge(tube);
+			geometryBranches.merge(tube);
 			tube.dispose();
+			
+			if(branch.length >= 2) {
+				var leaf = new THREE.ConeGeometry(
+					1,
+					1.5,
+					5,
+					1,
+					false);
+					
+				var direction = new THREE.Vector3();
+				direction.subVectors(branch[branch.length - 1], branch[branch.length - 2]);
+				
+				var leafTranslation = new THREE.Matrix4().makeTranslation(
+					branch[branch.length - 1].x,
+					branch[branch.length - 1].y,
+					branch[branch.length - 1].z);
+				var leafRotation = new THREE.Matrix4().lookAt(
+					branch[branch.length - 1],
+					branch[branch.length - 2],
+					new THREE.Vector3(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(Math.PI * -0.5));
+				var leafOffset = new THREE.Matrix4().makeTranslation(0, -0.4, 0);
+				
+				geometryLeaves.merge(leaf, leafTranslation.multiply(leafRotation).multiply(leafOffset));
+				leaf.dispose();
+			}
 		}
 		
-		return [new THREE.Mesh(geometry, this.MATERIAL_BRANCH)];
+		return [
+			new THREE.Mesh(geometryBranches, this.MATERIAL_BRANCH),
+			new THREE.Mesh(geometryLeaves, this.MATERIAL_LEAF)];
 	},
 	
 	buildGeometryCubes(branches) {
